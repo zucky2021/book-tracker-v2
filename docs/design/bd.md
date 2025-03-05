@@ -1,5 +1,8 @@
 # Basic design (基本設計)
 
+TODO:こちらGithub上で確認
+![Stack architecture](stack-architecture.png)
+
 ## 使用技術
 - backend
   - GO(Gin)
