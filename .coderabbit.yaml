@@ -75,6 +75,7 @@ reviews:
       - "DO NOT MERGE"
     drafts: false
     base_branches:
+      - "main"
       - "feature/.*"
       - "hotfix/.*"
 chat:
