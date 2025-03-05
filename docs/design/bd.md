@@ -15,7 +15,6 @@
 
 ## ソフトウェアアーキテクチャ
 - backend
-  - BFF?
   - DDD
 
 ## DB
@@ -45,7 +44,7 @@ book-tracker-v2/
 │   └── .settings.json
 ├── backend/
 │   └── Dockerfile
-├── fontend/
+├── frontend/
 │   └── Dockerfile
 ├── .coderabbi.yml
 └── docker-compose.yml
