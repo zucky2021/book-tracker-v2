@@ -1,0 +1,20 @@
+{
+  "recommendations": [
+    "ms-playwright.playwright",
+    "esbenp.prettier-vscode",
+    "streetsidesoftware.code-spell-checker",
+    "dbaeumer.vscode-eslint",
+    "alefragnani.bookmarks",
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+    "eamodio.gitlens",
+    "yzhang.markdown-all-in-one",
+    "postman.postman-for-vscode",
+    "golang.go",
+    "oderwat.indent-rainbow",
+    "gruntfuggly.todo-tree",
+    "jgclark.vscode-todo-highlight",
+    "premparihar.gotestexplorer",
+    "britesnow.vscode-toggle-quotes"
+  ]
+}

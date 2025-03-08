@@ -1,0 +1,28 @@
+{
+  "editor.tabSize": 2,
+  "cSpell.words": ["noopener", "noreferrer", "peaceiris", "VITE"],
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.formatOnSave": true,
+  "togglequotes.chars": ["\"", "'", "`"],
+  "files.autoSave": "afterDelay",
+  "editor.insertSpaces": true,
+  "editor.renderWhitespace": "boundary",
+  "indentRainbow.indentSetter": {
+    "[json]": 2,
+    "[go": 2
+  },
+  "[go]": {
+    "editor.tabSize": 2,
+    "editor.insertSpaces": false,
+    "editor.defaultFormatter": "golang.go"
+  },
+  "go.useLanguageServer": true,
+  "go.toolsManagement.autoUpdate": true,
+  "go.formatTool": "goimports",
+  "go.lintTool": "golangci-lint",
+  "go.buildOnSave": "workspace",
+  "go.vetOnSave": "workspace",
+  "gopls": {
+    "ui.semanticTokens": true
+  }
+}
