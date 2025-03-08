@@ -1,0 +1,82 @@
+language: "ja"
+early_access: false
+reviews:
+  request_changes_workflow: true
+  high_level_summary: true
+  review_status: true
+  collapse_walkthrough: false
+  path_instructions:
+    - path: "**/*.{ts,tsx,js,go}"
+      instructions: |
+        "ボーイスカウトルールに従ってください：コードを見つけたときよりも綺麗にしてください。
+        YAGNI(You Aren't Gonna Need It)の原則に従ってください：必要になるまで機能を実装しないでください。
+        DRY(Don't Repeat Yourself)の原則に従ってください：再利用可能なロジックを関数に抽出して、コードの重複を避けてください。
+        KISS(Keep It Simple Stupid)の原則に従ってください：シンプルで分かりやすいコードを書いてください。
+        タイポを検出し、修正を提案してください。"
+    - path: "**/*.{ts,tsx,js}"
+      instructions: |
+        "インデントには2スペースを使用してください。
+        Google JavaScript Style Guideに準拠していることを確認し、逸脱がある場合は指摘してください。
+        MDNにリストされている非推奨または廃止された機能の使用を避けてください: https://developer.mozilla.org/ja/docs/Web/JavaScript/Reference/Deprecated_and_obsolete_features
+        プロパティ名にはキャメルケースを使用し、必要に応じてPropTypesを適用してください。
+        フックの使用に関する公式Reactガイドラインに従ってください。
+        インラインスタイルを避けてください。
+        'var'の代わりに'let'または'const'を使用してください。'var'の使用があれば指摘してください。
+        適切な場所でメモ化やレンダリング最適化などのパフォーマンス最適化を実装してください。
+        不要な再レンダリングを防ぐために、関数コンポーネントにはReact.memo()を、クラスコンポーネントにはPureComponentを使用してください。
+        パフォーマンス向上のためにコード分割と遅延ロードを実装してください。
+        特にクロスサイトスクリプティング（XSS）など、潜在的なセキュリティ脆弱性に注意してください。
+        ユーザー入力をサニタイズし、dangerouslySetInnerHTMLの使用を避けてください。"
+    - path: "**/*.go"
+      instructions: |
+        "インデントにはタブを使用してください。これはGo言語の標準的な方法です。
+        gofmtツールを使用してコードをフォーマットしてください。これにより自動的にタブによるインデントが適用されます。
+        goimportsを使用してインポートを管理してください。
+        go vetを使用して疑わしい構造を検出してください。
+        golintを使用してスタイルエラーを検出してください。
+        go testを使用してテストを実行してください。
+        go test -benchを使用してベンチマークを実行してください。
+        go test -coverを使用してテストカバレッジを確認してください。
+        Go Style Guideに従ってください: https://google.github.io/styleguide/go/guide
+        Style Decisionsを参照してください: https://google.github.io/styleguide/go/decisions
+        Best Practicesを適用してください: https://google.github.io/styleguide/go/best-practices"
+    - path: "**/*.tsx"
+      instructions: |
+        コードの構造とアクセシビリティを向上させるために、セマンティックなHTML要素を使用してください。
+        コードを書く際はReactのベストプラクティスに従ってください。
+        アクセシビリティを向上させるためにWAI-ARIA属性を実装してください。
+        すべてのインタラクティブ要素に適切なキーボードナビゲーションサポートを確保してください。
+        可視テキストのない要素にはaria-labelまたはaria-labelledbyを使用してください。
+        モーダルやその他の動的コンテンツにフォーカス管理を実装してください。"
+    - path: "**/tests/*"
+      instructions: |
+        "テストコードが使用中のテストフレームワーク（例：Jest, Goのtestingパッケージ）のベストプラクティスに従っているか評価してください。
+        各テストの目的を明確にするために、テストの説明が十分に詳細であることを確認してください。
+        適切なアサーションとマッチャーを使用してください。
+        重要なパスとエッジケースのテストカバレッジを実装してください。
+        テストを独立させ、テスト間で状態を共有することを避けてください。"
+    - path: "**/Dockerfile"
+      instructions: |
+        "Best practiceに従ってください: https://docs.docker.jp/develop/develop-images/dockerfile_best-practices.html
+        マルチステージビルドを活用し、ビルドステージと実行ステージを分離してください。これにより最終的なイメージサイズを小さくできます。
+        適切なベースイメージを選択してください。可能な限り軽量なイメージ（例: Alpine Linuxベース）を使用し、セキュリティと効率性を向上させてください。
+        ビルドキャッシュを効果的に利用するために、命令の順序を適切に配置してください。
+        最小権限の原則に従い、可能な限り非rootユーザーでアプリケーションを実行してください。
+        .dockerignoreファイルを使用して、不要なファイルをビルドコンテキストから除外してください。
+        RUN命令を結合し、不要なパッケージのインストールを避けることで、レイヤー数を最小限に抑えてください。
+        ENVを使用して環境変数を設定し、ARGを使用してビルド時の変数を定義してください。
+        COPY命令を使用する際は、必要最小限のファイルのみをコピーしてください。
+        適切なヘルスチェックを実装するために、HEALTHCHECK命令の使用を検討してください。
+        Dockerfileの品質を維持するために、hadolint等のLinterツールの使用を検討してください。"
+  auto_review:
+    enabled: true
+    ignore_title_keywords:
+      - "WIP"
+      - "DO NOT MERGE"
+    drafts: false
+    base_branches:
+      - "main"
+      - "feature/.*"
+      - "hotfix/.*"
+chat:
+  auto_reply: true
