@@ -1,5 +1,5 @@
 # ベースイメージの指定
-FROM node:22.14
+FROM node:22.14-alpine
 # 作業ディレクトリ指定
 WORKDIR /app
 # Docker キャッシュを活用するために、最初に package.json と package-lock.json をコピー
