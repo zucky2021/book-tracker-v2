@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 
@@ -35,9 +36,16 @@ func main() {
 		defer resp.Body.Close()
 
 		var result map[string]interface{}
-		json.NewDecoder(resp.Body).Decode(&result)
+		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
+			log.Printf("Error decoding response from Google Books API: %v", err)
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode response from Google Books API"})
+			return
+		}
 		c.JSON(http.StatusOK, result)
 	})
 
-	r.Run(":8080") // サーバーを8080ポートで起動
+	log.Println("Started server on :8080");
+	if err := r.Run(":8080"); err != nil {
+		log.Fatalf("Server failed to start: %v", err)
+	}
 }
