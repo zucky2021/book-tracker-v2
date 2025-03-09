@@ -32,7 +32,8 @@ erDiagram
 
   memos {
     bigint id PK
-    string book_id "Google Book id"
+    bigint user_id "Google User ID"
+    string book_id "Google Book ID"
     text text "メモ"
     timestamp crated_at
     timestamp updated_at
