@@ -15,6 +15,7 @@
     "gruntfuggly.todo-tree",
     "jgclark.vscode-todo-highlight",
     "premparihar.gotestexplorer",
-    "britesnow.vscode-toggle-quotes"
+    "britesnow.vscode-toggle-quotes",
+    "ms-vscode-remote.remote-containers"
   ]
 }
