@@ -1,5 +1,5 @@
 # ベースイメージの指定
-FROM golang:1.24-alpine AS builder
+FROM golang:1.24-alpine AS base
 
 # 作業ディレクトリ指定
 WORKDIR /app
@@ -21,3 +21,20 @@ COPY .air.toml .
 
 # airを使ってアプリケーションを実行
 CMD ["air"]
+
+# 本番用のビルドステージ
+FROM base AS production
+
+# 本番用の依存関係のビルド
+COPY go.mod go.sum ./
+RUN go mod download
+
+# 本番用のビルド
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main .
+
+# WORKDIRを設定
+WORKDIR /app
+
+# 実行可能ファイルを指定
+CMD ["./main"]
