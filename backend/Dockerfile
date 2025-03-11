@@ -1,6 +1,10 @@
 # ベースイメージの指定
 FROM golang:1.24-alpine AS base
 
+# 非rootユーザーの作成
+RUN addgroup --gid 1000 appuser && \
+  adduser --uid 1000 --gid 1000 --disabled-password --gecos "" appuser
+
 # 作業ディレクトリ指定
 WORKDIR /app
 
@@ -18,6 +22,9 @@ COPY . .
 
 # airの設定ファイルをコピー
 COPY .air.toml .
+
+# 非ルートユーザーに切り替え
+USER appuser
 
 # airを使ってアプリケーションを実行
 CMD ["air"]
