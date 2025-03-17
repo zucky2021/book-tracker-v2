@@ -13,10 +13,10 @@ RUN npm install
 # プロジェクトの全てのファイルをコピー
 COPY . .
 
-# アプリケーションをビルド
-RUN npm run build
+# 環境変数でホットリロードを有効化
+ENV CHOKIDAR_USEPOLLING=true
 
 EXPOSE 3000
 
 # アプリケーションを実行
-CMD ["npm", "run", "start"]
+CMD ["npm", "run", "dev"]
