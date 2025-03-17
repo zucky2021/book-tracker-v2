@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"database/sql"
+	"log"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -10,16 +11,17 @@ import (
 func HealthCheckHandler(db *sql.DB) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		if err := db.Ping(); err != nil {
+			log.Printf("Database health check failed: %v", err)
 			c.JSON(http.StatusInternalServerError, gin.H{
-				"status": "Database connection failed",
-				"error":  err.Error(),
+				"status": "error",
+				"message": "Database connection failed",
 			})
 			return
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"status": "ok",
-			"db":     "Database connection successful",
+			"status":  "ok",
+			"message": "Database connection successful",
 		})
 	}
 }

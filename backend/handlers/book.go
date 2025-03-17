@@ -7,6 +7,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+// FIXME: 別課題で実装
+
 func GetBooksHandler(apiKey string) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		authToken := c.GetHeader("Authorization")
