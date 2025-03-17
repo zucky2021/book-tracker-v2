@@ -14,7 +14,14 @@ const App: React.FC = () => {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      https://books.google.co.jp/books?uid=100173087971504642758&hl=ja
+
+      <a
+        href="https://books.google.co.jp/books?uid=100173087971504642758&hl=ja"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Googleブックを開く
+      </a>
     </>
   );
 };

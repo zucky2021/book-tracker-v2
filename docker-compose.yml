@@ -11,6 +11,8 @@ services:
       - FAST_REFRESH=true # Viteの高速リフレッシュ機能を有効化
       - VITE_ENDPOINT=$ENDPOINT # APIエンドポイントのURL
       - VITE_API_VERSION=$API_VERSION # APIバージョン
+    env_file:
+      - .env # 参照するenvファイルを指定
     command: npm run dev # アプリケーションの実行コマンドを指定する
     ports:
       - "3000:3000" # [ホストのポート番号]：[コンテナのポート番号]
@@ -29,13 +31,13 @@ services:
     ports:
       - "8080:8080"
     env_file:
-      - .env # 読み込むファイルを指定
+      - .env
     depends_on:
       - db
     restart: always
 
   db:
-    build: 
+    build:
       context: ./db
       dockerfile: Dockerfile
     volumes: # コンテナの外部に保管する

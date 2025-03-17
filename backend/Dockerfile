@@ -1,5 +1,5 @@
 # ベースイメージの指定
-FROM golang:1.24-alpine AS base
+FROM golang:1.24-alpine AS build
 
 # 非rootユーザーの作成
 RUN addgroup -g 1000 appuser && \
@@ -33,4 +33,4 @@ USER appuser
 CMD ["air"]
 
 # 本番用のビルドステージ TODO:適宜のビルドを追加
-FROM base AS production
+FROM build AS production
