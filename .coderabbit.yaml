@@ -39,7 +39,14 @@ reviews:
         go test -coverを使用してテストカバレッジを確認してください。
         Go Style Guideに従ってください: https://google.github.io/styleguide/go/guide
         Style Decisionsを参照してください: https://google.github.io/styleguide/go/decisions
-        Best Practicesを適用してください: https://google.github.io/styleguide/go/best-practices"
+        Best Practicesを適用してください: https://google.github.io/styleguide/go/best-practices
+        クリーンアーキテクチャの原則に従ってください:
+          - ドメインロジックを中心に配置し、外部依存を最小限に抑えます。
+          - 依存関係逆転の原則を適用し、外部フレームワークやライブラリに依存しないようにします。
+        DDD（Domain-Driven Design）の原則を適用してください:
+        - ドメインモデルを明確に定義し、ビジネスロジックをドメイン層に集中させます。
+        - エンティティ、値オブジェクト、リポジトリなどのDDDパターンを活用して、ドメインモデルの一貫性を保ちます。
+        - ドメインイベントやコマンドを使用して、ドメインの状態変化を明確にします。"
     - path: "**/*.tsx"
       instructions: |
         コードの構造とアクセシビリティを向上させるために、セマンティックなHTML要素を使用してください。

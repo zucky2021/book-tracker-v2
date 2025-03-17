@@ -1,51 +1,41 @@
 package main
 
 import (
-	"encoding/json"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
 
-	"github.com/gin-contrib/cors"
+	"backend/config"
+	"backend/handlers"
+
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
+	// 環境変数から直接APIキーを取得
+	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
+	if apiKey == "" {
+		fmt.Println("GOOGLE_BOOKS_API_KEY is not set")
+		return
+	}
+
+	db, err := config.SetupDatabase()
+	if err != nil {
+		log.Fatalf("Could not connect to the database: %v", err)
+	}
+	defer db.Close()
+
 	r := gin.Default()
 
-	// CORS設定 (フロントエンドと通信できるようにする)
-	r.Use(cors.Default())
+	config.SetupCORS(r)
 
-	// 書籍検索APIエンドポイント
-	r.GET("/api/books", func(c *gin.Context) {
-		query := c.Query("q")
-		if query == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Query parameter 'q' is required"})
-			return
-		}
+	// ルーティング設定
+	r.GET("/health", handlers.HealthCheckHandler(db))
+	r.GET("/api/books", handlers.GetBooksHandler(apiKey))
 
-		apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
-		url := fmt.Sprintf("https://www.googleapis.com/books/v1/volumes?q=%s&key=%s", query, apiKey)
-
-		resp, err := http.Get(url)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to fetch data from Google Books API"})
-			return
-		}
-		defer resp.Body.Close()
-
-		var result map[string]interface{}
-		if err := json.NewDecoder(resp.Body).Decode(&result); err != nil {
-			log.Printf("Error decoding response from Google Books API: %v", err)
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to decode response from Google Books API"})
-			return
-		}
-		c.JSON(http.StatusOK, result)
-	})
-
-	log.Println("Started server on :8080");
+	// サーバーを起動（ポート8080）
+	fmt.Println("Starting server on :8080")
 	if err := r.Run(":8080"); err != nil {
-		log.Fatalf("Server failed to start: %v", err)
+		fmt.Printf("Failed to start server: %v\n", err)
 	}
 }

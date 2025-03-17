@@ -11,6 +11,8 @@ services:
       - FAST_REFRESH=true # Viteの高速リフレッシュ機能を有効化
       - VITE_ENDPOINT=$ENDPOINT # APIエンドポイントのURL
       - VITE_API_VERSION=$API_VERSION # APIバージョン
+    env_file:
+      - .env # 参照するenvファイルを指定
     command: npm run dev # アプリケーションの実行コマンドを指定する
     ports:
       - "3000:3000" # [ホストのポート番号]：[コンテナのポート番号]
@@ -21,34 +23,32 @@ services:
     tty: true # 端末を有効化
 
   backend:
-    build: # backend の Dockerfile があるパス
-      context: ./backend # バックエンドプロジェクトのディレクトリ
-      dockerfile: Dockerfile # 使用するDockerfile
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
     volumes:
-      - ./backend:/app # バックエンドのソースコードの変更をコンテナに即時反映
+      - ./backend:/app
     ports:
-      - "8080:8080" # [ホストのポート番号]：[コンテナのポート番号]
-    environment: # サービスのコンテナに環境変数を設定
-      DB_HOST: db # データベースホスト名
-      DB_USER: ${DB_USER} # データベースユーザー名
-      DB_PASSWORD: ${DB_PASSWORD} # データベースパスワード
-      DB_NAME: ${DB_NAME} # データベース名
+      - "8080:8080"
+    env_file:
+      - .env
     depends_on:
-      - db # 依存関係の定義
-    restart: always # コンテナが停止した場合に自動的に再起動
+      - db
+    restart: always
 
-  # データベースサービス
   db:
-    image: mysql:8.4 # 使用するMySQLイメージ
+    build:
+      context: ./db
+      dockerfile: Dockerfile
     volumes: # コンテナの外部に保管する
       - mysql-data-dev:/var/lib/mysql # データベースデータを永続化するボリューム
-    environment: # サービスのコンテナに環境変数を設定
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD_DEV} # MySQLルートパスワード
-      MYSQL_DATABASE: ${MYSQL_DATABASE_DEV} # データベース名
-      MYSQL_USER: ${MYSQL_USER_DEV} # データベースユーザー名
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD_DEV} # データベースパスワード
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    env_file:
+      - .env
     ports:
-      - "3306:3306" # [ホストのポート番号]：[コンテナのポート番号]
+      - "3306:3306"
     restart: always # コンテナが停止した場合に自動的に再起動
 
 # ボリュームの定義

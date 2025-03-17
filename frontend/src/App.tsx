@@ -1,23 +1,9 @@
-import { useState } from "react";
+import React from "react";
 import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0);
-
-  /**
-   * FIXME:Remove this function
-   */
-  const search = async (): Promise<void> => {
-    fetch("http://localhost:8080/api/books?q=example")
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Error:", error));
-  };
-
-  search();
-
+const App: React.FC = () => {
   return (
     <>
       <div>
@@ -28,20 +14,16 @@ function App() {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+
+      <a
+        href="https://books.google.co.jp/books?uid=100173087971504642758&hl=ja"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Googleブックを開く
+      </a>
     </>
   );
-}
+};
 
 export default App;

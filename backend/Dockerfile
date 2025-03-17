@@ -1,9 +1,9 @@
 # ベースイメージの指定
-FROM golang:1.24-alpine AS base
+FROM golang:1.24-alpine AS build
 
 # 非rootユーザーの作成
-RUN addgroup --gid 1000 appuser && \
-  adduser --uid 1000 --gid 1000 --disabled-password --gecos "" appuser
+RUN addgroup -g 1000 appuser && \
+  adduser -u 1000 -G appuser -D -H appuser
 
 # 作業ディレクトリ指定
 WORKDIR /app
@@ -23,25 +23,14 @@ COPY . .
 # airの設定ファイルをコピー
 COPY .air.toml .
 
+# ビルドキャッシュディレクトリを作成し、所有権を変更
+RUN mkdir -p /home/appuser/.cache/go-build && chown -R appuser:appuser /home/appuser/.cache
+
 # 非ルートユーザーに切り替え
 USER appuser
 
 # airを使ってアプリケーションを実行
 CMD ["air"]
 
-# 本番用のビルドステージ
-FROM base AS production
-
-# 本番用の依存関係のビルド
-COPY go.mod go.sum ./
-RUN go mod download
-
-# 本番用のビルド
-COPY . .
-RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o main .
-
-# WORKDIRを設定
-WORKDIR /app
-
-# 実行可能ファイルを指定
-CMD ["./main"]
+# 本番用のビルドステージ TODO:適宜のビルドを追加
+FROM build AS production
