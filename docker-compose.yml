@@ -1,0 +1,56 @@
+services:
+  frontend:
+    build:
+      context: ./frontend # フロントエンドプロジェクトのディレクトリ
+      dockerfile: Dockerfile # 使用するDockerfile
+    volumes:
+      - ./frontend:/app # フロントエンドのソースコードの変更をコンテナに即時反映
+      - /app/node_modules # node_modulesを永続化するためのボリューム
+    environment: # Dockerコンテナ内で利用可能な環境変数を設定する
+      - NODE_ENV=development # 開発環境として設定
+      - FAST_REFRESH=true # Viteの高速リフレッシュ機能を有効化
+      - VITE_ENDPOINT=$ENDPOINT # APIエンドポイントのURL
+      - VITE_API_VERSION=$API_VERSION # APIバージョン
+    env_file:
+      - .env # 参照するenvファイルを指定
+    command: npm run dev # アプリケーションの実行コマンドを指定する
+    ports:
+      - "3000:3000" # [ホストのポート番号]：[コンテナのポート番号]
+    depends_on:
+      - backend # backendサービスが起動した後にこのサービスを起動する
+    restart: always # コンテナが停止した場合に自動的に再起動
+    stdin_open: true # 標準入力を開いておく
+    tty: true # 端末を有効化
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    depends_on:
+      - db
+    restart: always
+
+  db:
+    build:
+      context: ./db
+      dockerfile: Dockerfile
+    volumes: # コンテナの外部に保管する
+      - mysql-data-dev:/var/lib/mysql # データベースデータを永続化するボリューム
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+    env_file:
+      - .env
+    ports:
+      - "3306:3306"
+    restart: always # コンテナが停止した場合に自動的に再起動
+
+# ボリュームの定義
+volumes:
+  mysql-data-dev: # db の volume の名前を定義

@@ -32,7 +32,8 @@ erDiagram
 
   memos {
     bigint id PK
-    string book_id "Google Book id"
+    bigint user_id "Google User ID"
+    string book_id "Google Book ID"
     text text "メモ"
     timestamp crated_at
     timestamp updated_at
@@ -49,7 +50,7 @@ book-tracker-v2/
 │   └── Dockerfile
 ├── frontend/
 │   └── Dockerfile
-├── .coderabbi.yml
+├── .coderabbit.yaml
 └── docker-compose.yml
 ```
 [Reference](https://tree.nathanfriend.com/?s=(%27options!(%27fancy!true~fullPath!false~trailingSlash!true~rootDot!false)~5(%275%27book-tra4-v2*.vscode*3.settings.json*back0font0.coderabbi6do4-compose6%27)~version!%271%27)*%5Cn30end*3Do4file*3%20%204cker5source!6.yml*%0165430*)
