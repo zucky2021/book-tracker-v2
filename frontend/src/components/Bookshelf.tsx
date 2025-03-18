@@ -37,7 +37,7 @@ const Bookshelf = () => {
         const timeoutId = setTimeout(() => controller.abort(), 5000);
         const response = await fetch(
           `https://www.googleapis.com/books/v1/users/${userId}/bookshelves/${shelfId}`,
-          { signal: controller.signal }
+          { signal: controller.signal },
         );
         clearTimeout(timeoutId);
 
@@ -62,7 +62,7 @@ const Bookshelf = () => {
     const fetchBooks = async () => {
       try {
         const response = await fetch(
-          `https://www.googleapis.com/books/v1/users/${userId}/bookshelves/${shelfId}/volumes?startIndex=${startIndex}&maxResults=${MAX_RESULTS}`
+          `https://www.googleapis.com/books/v1/users/${userId}/bookshelves/${shelfId}/volumes?startIndex=${startIndex}&maxResults=${MAX_RESULTS}`,
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -73,7 +73,7 @@ const Bookshelf = () => {
         setBooks((prevBooks) => {
           const newBooks = [...prevBooks, ...fetchedBooks];
           const uniqueBooks = Array.from(
-            new Set(newBooks.map((book) => book.id))
+            new Set(newBooks.map((book) => book.id)),
           ).map((id) => newBooks.find((book) => book.id === id));
           return uniqueBooks;
         });
@@ -161,8 +161,8 @@ const Bookshelf = () => {
         filteredBooks.reduce((acc: string[], book) => {
           const bookCategories = book.volumeInfo.categories || [];
           return acc.concat(bookCategories);
-        }, [])
-      )
+        }, []),
+      ),
     );
     setCategories(uniqueCategories);
   }, [filteredBooks]);
@@ -171,7 +171,7 @@ const Bookshelf = () => {
 
   return (
     <section id="bookshelf">
-      <h2 className="flex justify-center items-center text-3xl my-3 font-serif">
+      <h2 className="my-3 flex items-center justify-center font-serif text-3xl">
         <LibraryBig size={24} />
         書棚
       </h2>
@@ -179,7 +179,7 @@ const Bookshelf = () => {
       {isDialogOpen || (
         <button
           onClick={removeUserId}
-          className="flex justify-around w-36 items-center mx-auto my-2 p-1 rounded-2xl bg-red-500 text-white cursor-pointer hover:bg-red-600"
+          className="mx-auto my-2 flex w-36 cursor-pointer items-center justify-around rounded-2xl bg-red-500 p-1 text-white hover:bg-red-600"
           aria-label="Local StorageからGoogle BooksユーザーID削除"
         >
           Delete user ID
@@ -224,7 +224,7 @@ const Bookshelf = () => {
       </dialog>
 
       <form>
-        <fieldset className="my-2 border border-gray-300 rounded-lg p-3 w-[80%] min-w-72 mx-auto">
+        <fieldset className="mx-auto my-2 w-[80%] min-w-72 rounded-lg border border-gray-300 p-3">
           <legend className="flex items-center font-serif text-2xl">
             書棚選択
             <LibraryBig size={24} />
@@ -237,7 +237,7 @@ const Bookshelf = () => {
               setStartIndex(0);
             }}
             aria-label="書棚選択"
-            className="w-36 text-center p-2 rounded-md border border-gray-300"
+            className="w-36 rounded-md border border-gray-300 p-2 text-center"
           >
             {Object.entries(BOOKSHELF_IDS).map(([id, name]) => (
               <option key={id} value={id}>
@@ -249,13 +249,13 @@ const Bookshelf = () => {
       </form>
 
       <form>
-        <fieldset className="my-2 border border-gray-300 rounded-lg p-3 w-[80%] min-w-72 mx-auto">
+        <fieldset className="mx-auto my-2 w-[80%] min-w-72 rounded-lg border border-gray-300 p-3">
           <legend className="flex items-center font-serif text-2xl">
             書棚内検索
             <Filter size={24} />
           </legend>
 
-          <label htmlFor="filter-text" className="font-serif block">
+          <label htmlFor="filter-text" className="block font-serif">
             Title / Author / Description
           </label>
           <input
@@ -264,7 +264,7 @@ const Bookshelf = () => {
             id="filter-text"
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
-            className="w-40 text-center p-2 rounded-md border border-gray-300 block mx-auto text-sm"
+            className="mx-auto block w-40 rounded-md border border-gray-300 p-2 text-center text-sm"
           />
 
           <label htmlFor="filter-category" className="font-serif">
@@ -274,7 +274,7 @@ const Bookshelf = () => {
             id="filter-category"
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
-            className="w-40 text-center p-2 rounded-md border border-gray-300 block mx-auto text-sm"
+            className="mx-auto block w-40 rounded-md border border-gray-300 p-2 text-center text-sm"
           >
             <option value="">選択してください</option>
             {categories.map((category) => (
@@ -292,7 +292,7 @@ const Bookshelf = () => {
         hasMore={hasMore}
         loader={<Loading />}
         endMessage={
-          <p className="font-serif text-center text-xl my-3">That's all</p>
+          <p className="my-3 text-center font-serif text-xl">That's all</p>
         }
       >
         <MemorizedBookList books={filteredBooks} />
@@ -300,7 +300,7 @@ const Bookshelf = () => {
 
       {error && (
         <div
-          className="text-center text-red-500 my-2"
+          className="my-2 text-center text-red-500"
           role="alert"
           aria-live="assertive"
         >

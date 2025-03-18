@@ -7,23 +7,23 @@ type BookListProps = {
 
 const BookList = ({ books }: BookListProps) => {
   return (
-    <ul className="my-2 mx-auto w-[90%]">
+    <ul className="mx-auto my-2 w-[90%]">
       {books ? (
         books.map((book) => (
-          <li className="shadow-xl p-3 rounded-2xl" key={book.id}>
+          <li className="rounded-2xl p-3 shadow-xl" key={book.id}>
             {book.volumeInfo.imageLinks?.thumbnail && (
               <img
                 src={book.volumeInfo.imageLinks.thumbnail}
                 alt={book.volumeInfo.title}
                 loading="lazy"
-                className="mx-auto m-1"
+                className="m-1 mx-auto"
               />
             )}
 
             {book.saleInfo.saleability === "FOR_SALE" && (
               <a
                 href={book.saleInfo.buyLink}
-                className="bg-red-500 text-white p-1 m-2 rounded-md w-fit flex items-center mx-auto hover:bg-red-600"
+                className="m-2 mx-auto flex w-fit items-center rounded-md bg-red-500 p-1 text-white hover:bg-red-600"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`セール中 - ${book.volumeInfo.title}の購入ページを新しいタブで開く`}
@@ -38,7 +38,7 @@ const BookList = ({ books }: BookListProps) => {
                 href={book.volumeInfo.infoLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center mt-2 text-xl font-bold hover:opacity-30"
+                className="mt-2 flex items-center justify-center text-xl font-bold hover:opacity-30"
               >
                 {book.volumeInfo.title}
                 <ExternalLink size={20} />
@@ -46,7 +46,7 @@ const BookList = ({ books }: BookListProps) => {
             </h3>
 
             <p>{book.volumeInfo.authors?.join(", ") || "著者不明"}</p>
-            <p className="bg-gray-500 w-fit p-1 m-1 mx-auto rounded-md text-white">
+            <p className="m-1 mx-auto w-fit rounded-md bg-gray-500 p-1 text-white">
               {book.volumeInfo.categories?.join(", ") || "カテゴリ不明"}
             </p>
             <p className="text-left">
@@ -55,7 +55,7 @@ const BookList = ({ books }: BookListProps) => {
           </li>
         ))
       ) : (
-        <li className="font-serif my-3 text-3xl">
+        <li className="my-3 font-serif text-3xl">
           書籍が見つかりませんでした。
         </li>
       )}
