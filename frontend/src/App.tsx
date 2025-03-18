@@ -7,7 +7,7 @@ import Bookshelf from "./components/bookshelf";
 const App: React.FC = () => {
   return (
     <>
-      <div>
+      <div className="flex justify-center">
         <a href="https://vite.dev" target="_blank">
           <img src={viteLogo} className="logo" alt="Vite logo" />
         </a>
@@ -20,6 +20,7 @@ const App: React.FC = () => {
         href="https://books.google.co.jp/books?uid=100173087971504642758&hl=ja"
         target="_blank"
         rel="noopener noreferrer"
+        className="text-2xl"
       >
         Googleブックを開く
       </a>

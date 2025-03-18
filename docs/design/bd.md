@@ -1,16 +1,17 @@
 # Basic design (基本設計)
 
-TODO:こちらGithub上で確認
 ![Stack architecture](stack-architecture.png)
 
-## 使用技術
+## Technology stack
 - backend
-  - GO(Gin)
+  - GO
+  - Gin
 - frontend
   - npm
   - Vite
   - React
   - TypeScript
+  - [Tailwindcss](https://tailwindcss.com/)
 - API
   - Google Books API
 - DB
@@ -18,6 +19,7 @@ TODO:こちらGithub上で確認
 
 ## ソフトウェアアーキテクチャ
 - backend
+  - Clean architecture
   - DDD
 
 ## DB

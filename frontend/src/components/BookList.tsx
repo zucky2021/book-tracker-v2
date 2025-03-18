@@ -8,22 +8,23 @@ type BookListProps = {
 
 const BookList = ({ books }: BookListProps) => {
   return (
-    <ul className="book-list">
+    <ul className="my-2 mx-auto w-[90%]">
       {books ? (
-        books.map(book => (
-          <li className="book-list__item" key={book.id}>
+        books.map((book) => (
+          <li className="shadow-xl p-3 rounded-2xl" key={book.id}>
             {book.volumeInfo.imageLinks?.thumbnail && (
               <img
                 src={book.volumeInfo.imageLinks.thumbnail}
                 alt={book.volumeInfo.title}
                 loading="lazy"
+                className="mx-auto m-1"
               />
             )}
 
             {book.saleInfo.saleability === "FOR_SALE" && (
               <a
                 href={book.saleInfo.buyLink}
-                className="book-list__sale"
+                className="bg-red-500 text-white p-1 m-2 rounded-md w-fit flex items-center mx-auto hover:bg-red-600"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label={`セール中 - ${book.volumeInfo.title}の購入ページを新しいタブで開く`}
@@ -38,26 +39,26 @@ const BookList = ({ books }: BookListProps) => {
                 href={book.volumeInfo.infoLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="book-list__item-title"
+                className="flex items-center justify-center mt-2 text-xl font-bold hover:opacity-30"
               >
                 {book.volumeInfo.title}
-                <ExternalLink size={16} />
+                <ExternalLink size={20} />
               </a>
             </h3>
 
-            <p className="book-list__item-authors">
-              {book.volumeInfo.authors?.join(", ") || "著者不明"}
-            </p>
-            <p className="book-list__item-category">
+            <p>{book.volumeInfo.authors?.join(", ") || "著者不明"}</p>
+            <p className="bg-gray-500 w-fit p-1 m-1 mx-auto rounded-md text-white">
               {book.volumeInfo.categories?.join(", ") || "カテゴリ不明"}
             </p>
-            <p className="book-list__item-description">
+            <p className="text-left">
               {book.volumeInfo.description || "説明不明"}
             </p>
           </li>
         ))
       ) : (
-        <li className="book-list__empty">書籍が見つかりませんでした。</li>
+        <li className="font-serif my-3 text-3xl">
+          書籍が見つかりませんでした。
+        </li>
       )}
     </ul>
   );

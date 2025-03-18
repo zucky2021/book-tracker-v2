@@ -1,7 +1,6 @@
 import React, { memo, useCallback, useEffect, useRef, useState } from "react";
 import { GoogleBook } from "../types/google_book";
 import { BOOKSHELF_IDS, MAX_RESULTS } from "../constants/google_book";
-// import "../../scss/components/Bookshelf.scss"; FIXME: tailwind css
 import BookList from "./BookList";
 import { CircleX, Filter, LibraryBig, Save } from "lucide-react";
 import Loading from "./Loading";
@@ -171,8 +170,8 @@ const Bookshelf = () => {
   const MemorizedBookList = memo(BookList);
 
   return (
-    <section className="bookshelf" id="bookshelf">
-      <h2>
+    <section id="bookshelf">
+      <h2 className="flex justify-center items-center text-3xl my-3 font-serif">
         <LibraryBig size={24} />
         書棚
       </h2>
@@ -180,10 +179,10 @@ const Bookshelf = () => {
       {isDialogOpen || (
         <button
           onClick={removeUserId}
-          className="bookshelf__deleteBtn"
+          className="flex justify-around w-36 items-center mx-auto my-2 p-1 rounded-2xl bg-red-500 text-white cursor-pointer hover:bg-red-600"
           aria-label="Local StorageからGoogle BooksユーザーID削除"
         >
-          ユーザーID 削除
+          Delete user ID
           <CircleX size={18} />
         </button>
       )}
@@ -224,11 +223,11 @@ const Bookshelf = () => {
         </form>
       </dialog>
 
-      <form className="bookshelf__choice">
-        <fieldset>
-          <legend>
+      <form>
+        <fieldset className="my-2 border border-gray-300 rounded-lg p-3 w-[80%] min-w-72 mx-auto">
+          <legend className="flex items-center font-serif text-2xl">
             書棚選択
-            <LibraryBig size={16} />
+            <LibraryBig size={24} />
           </legend>
           <select
             value={shelfId}
@@ -238,6 +237,7 @@ const Bookshelf = () => {
               setStartIndex(0);
             }}
             aria-label="書棚選択"
+            className="w-36 text-center p-2 rounded-md border border-gray-300"
           >
             {Object.entries(BOOKSHELF_IDS).map(([id, name]) => (
               <option key={id} value={id}>
@@ -248,27 +248,33 @@ const Bookshelf = () => {
         </fieldset>
       </form>
 
-      <form className="bookshelf__filter">
-        <fieldset>
-          <legend>
+      <form>
+        <fieldset className="my-2 border border-gray-300 rounded-lg p-3 w-[80%] min-w-72 mx-auto">
+          <legend className="flex items-center font-serif text-2xl">
             書棚内検索
-            <Filter size={16} />
+            <Filter size={24} />
           </legend>
 
-          <label htmlFor="filter-text">Title / Author / Description</label>
+          <label htmlFor="filter-text" className="font-serif block">
+            Title / Author / Description
+          </label>
           <input
             type="text"
             placeholder="キーワードを入力"
             id="filter-text"
             value={filterText}
             onChange={(e) => setFilterText(e.target.value)}
+            className="w-40 text-center p-2 rounded-md border border-gray-300 block mx-auto text-sm"
           />
 
-          <label htmlFor="filter-category">Category</label>
+          <label htmlFor="filter-category" className="font-serif">
+            Category
+          </label>
           <select
             id="filter-category"
             value={filterCategory}
             onChange={(e) => setFilterCategory(e.target.value)}
+            className="w-40 text-center p-2 rounded-md border border-gray-300 block mx-auto text-sm"
           >
             <option value="">選択してください</option>
             {categories.map((category) => (
@@ -285,13 +291,19 @@ const Bookshelf = () => {
         next={() => setStartIndex((prevIndex) => prevIndex + MAX_RESULTS)}
         hasMore={hasMore}
         loader={<Loading />}
-        endMessage={<p className="bookshelf__fetch-all-msg">That's all</p>}
+        endMessage={
+          <p className="font-serif text-center text-xl my-3">That's all</p>
+        }
       >
         <MemorizedBookList books={filteredBooks} />
       </InfiniteScroll>
 
       {error && (
-        <div className="bookshelf__error" role="alert" aria-live="assertive">
+        <div
+          className="text-center text-red-500 my-2"
+          role="alert"
+          aria-live="assertive"
+        >
           {error}
         </div>
       )}
