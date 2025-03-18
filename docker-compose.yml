@@ -4,14 +4,13 @@ services:
       context: ./frontend # フロントエンドプロジェクトのディレクトリ
       dockerfile: Dockerfile # 使用するDockerfile
     volumes:
-      - ./frontend:/app # フロントエンドのソースコードの変更をコンテナに即時反映
+      - ./frontend:/app # フロントエンドのソースコードの変更をコンテナにバインドマウント
       - /app/node_modules # node_modulesを永続化するためのボリューム
     environment: # Dockerコンテナ内で利用可能な環境変数を設定する
       - NODE_ENV=development # 開発環境として設定
       - FAST_REFRESH=true # Viteの高速リフレッシュ機能を有効化
       - CHOKIDAR_USEPOLLING=true # ファイル変更検知を有効化
-      - VITE_ENDPOINT=$ENDPOINT # APIエンドポイントのURL
-      - VITE_API_VERSION=$API_VERSION # APIバージョン
+      - CHOKIDAR_INTERVAL=1000 # ファイル変更検知の間隔ms
     env_file:
       - .env # 参照するenvファイルを指定
     command: npm run dev # アプリケーションの実行コマンドを指定する

@@ -1,6 +1,5 @@
 import { GoogleBook } from "../types/google_book";
 import { ExternalLink, ShoppingBasket } from "lucide-react";
-// import "../../scss/components/BookList.scss"; FIXME: tailwind css
 
 type BookListProps = {
   books: GoogleBook[];
