@@ -191,26 +191,35 @@ const Bookshelf = () => {
         </button>
       )}
 
-      <dialog ref={dialogRef} className="bookshelf__dialog" aria-modal="true">
-        <h3 aria-labelledby="dialog-title">
+      <dialog
+        ref={dialogRef}
+        className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform rounded-lg p-4 shadow-lg"
+        aria-modal="true"
+      >
+        <h3 aria-labelledby="dialog-title" className="font-serif text-xl">
           Google BooksのユーザーIDを入力してください。
         </h3>
-        <p aria-labelledby="dialog-description">
+        <p aria-labelledby="dialog-description" className="my-2 text-lg">
           <a
             href="https://books.google.com/books"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="Google Booksサイトを新しいタブで開く"
+            className="text-blue-500"
           >
             Google Booksサイト
           </a>
           のページURLから取得できます。
           <br />
-          <code>
-            https://books.google.com/books?uid=<span>123456789</span>
+          <code className="mx-auto my-2 block w-fit rounded-md bg-gray-200 p-1 text-sm">
+            https://books.google.com/books?uid=
+            <span className="text-lg text-red-500">123456789</span>
           </code>
         </p>
-        <form onSubmit={handleSetUserId}>
+        <form
+          onSubmit={handleSetUserId}
+          className="flex items-center justify-center"
+        >
           <input
             type="text"
             inputMode="numeric"
@@ -220,20 +229,30 @@ const Bookshelf = () => {
             required
             aria-required="true"
             ref={inputRef}
+            className="w-60 rounded-md border border-gray-300 p-2 text-center text-sm"
           />
-          <button type="submit" aria-label="Google BooksユーザーID設定">
-            <Save size={16} />
+          <button
+            type="submit"
+            aria-label="Google BooksユーザーID設定"
+            className="ml-2 cursor-pointer rounded-xl bg-sky-300 p-2 shadow-xl"
+          >
+            <Save size={20} />
           </button>
         </form>
       </dialog>
 
       <form>
         <fieldset className="mx-auto my-2 w-[80%] min-w-72 rounded-lg border border-gray-300 p-3">
-          <legend id="bookshelf-legend" className="flex items-center font-serif text-2xl">
+          <legend
+            id="bookshelf-legend"
+            className="flex items-center font-serif text-2xl"
+          >
             書棚選択
             <LibraryBig size={24} aria-hidden="true" />
           </legend>
-          <label htmlFor="bookshelf-select" className="sr-only">書棚を選択してください</label>
+          <label htmlFor="bookshelf-select" className="sr-only">
+            書棚を選択してください
+          </label>
           <select
             id="bookshelf-select"
             value={shelfId}
