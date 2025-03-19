@@ -20,7 +20,7 @@ func HealthCheckHandler(db *sql.DB) gin.HandlerFunc {
 		}
 
 		c.JSON(http.StatusOK, gin.H{
-			"status":  "ok",
+			"status": "ok",
 			"message": "Database connection successful",
 		})
 	}
