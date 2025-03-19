@@ -3,6 +3,8 @@ services:
     build:
       context: ./frontend # フロントエンドプロジェクトのディレクトリ
       dockerfile: Dockerfile # 使用するDockerfile
+    networks:
+      - app-networks # ネットワークを指定
     volumes:
       - ./frontend:/app # フロントエンドのソースコードの変更をコンテナにバインドマウント
       - /app/node_modules # node_modulesを永続化するためのボリューム
@@ -26,6 +28,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    networks:
+      - app-networks
     volumes:
       - ./backend:/app
     ports:
@@ -33,13 +37,16 @@ services:
     env_file:
       - .env
     depends_on:
-      - db
+      db:
+        condition: service_healthy
     restart: always
 
   db:
     build:
       context: ./db
       dockerfile: Dockerfile
+    networks:
+      - app-networks
     volumes: # コンテナの外部に保管する
       - mysql-data-dev:/var/lib/mysql # データベースデータを永続化するボリューム
     environment:
@@ -50,7 +57,17 @@ services:
     ports:
       - "3306:3306"
     restart: always # コンテナが停止した場合に自動的に再起動
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 # ボリュームの定義
 volumes:
   mysql-data-dev: # db の volume の名前を定義
+
+networks:
+  app-networks: # ネットワークの名前を指定
+    driver: bridge # ドライバーを指定

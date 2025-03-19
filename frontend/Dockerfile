@@ -15,8 +15,10 @@ COPY . .
 ENV CHOKIDAR_USEPOLLING=true
 
 # Create non-root user
-RUN addgroup -g 1000 appuser && \
-  adduser -u 1000 -G appuser -D -H appuser
+RUN addgroup -S appuser && \
+  adduser -S -G appuser appuser && \
+  chown -R appuser:appuser /app
+
 USER appuser
 
 EXPOSE 3000
