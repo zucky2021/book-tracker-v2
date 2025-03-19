@@ -1,5 +1,5 @@
 # ベースイメージ
-FROM node:22.14-alpine
+FROM node:22.14-alpine as builder
 
 # 作業ディレクトリ指定
 WORKDIR /app
@@ -13,6 +13,11 @@ COPY . .
 
 # 環境変数でホットリロードを有効化
 ENV CHOKIDAR_USEPOLLING=true
+
+# Create non-root user
+RUN addgroup -g 1000 appuser && \
+  adduser -u 1000 -G appuser -D -H appuser
+USER appuser
 
 EXPOSE 3000
 

@@ -1,10 +1,12 @@
+import { BookshelfId } from "../types/google_book";
+
 export const FAVORITE = 0;
 export const TO_READ = 2;
 export const READING_NOW = 3;
 export const HAVE_READ = 4;
 
 /** 書籍IDと表示名のマッピング */
-export const BOOKSHELF_IDS: { [key: number]: string } = {
+export const BOOKSHELF_IDS: Record<BookshelfId, string> = {
   [FAVORITE]: "お気に入り",
   [TO_READ]: "読みたい本",
   [READING_NOW]: "読書中",

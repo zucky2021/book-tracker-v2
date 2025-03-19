@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { GoogleBook } from "../types/google_book";
 import { ExternalLink, ShoppingBasket } from "lucide-react";
 
@@ -63,4 +64,4 @@ const BookList = ({ books }: BookListProps) => {
   );
 };
 
-export default BookList;
+export default memo(BookList);

@@ -1,3 +1,5 @@
+import { FAVORITE, HAVE_READ, READING_NOW, TO_READ } from "../constants/google_book";
+
 export type GoogleBook = {
   id: string;
   saleInfo: {
@@ -17,3 +19,5 @@ export type GoogleBook = {
     infoLink: string;
   };
 };
+
+export type BookshelfId = typeof FAVORITE | typeof TO_READ | typeof READING_NOW | typeof HAVE_READ;

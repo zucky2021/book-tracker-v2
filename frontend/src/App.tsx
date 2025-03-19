@@ -3,7 +3,6 @@ import reactLogo from "./assets/react.svg";
 import viteLogo from "/vite.svg";
 import "./App.css";
 import Bookshelf from "./components/Bookshelf";
-import Loading from "./components/Loading";
 
 const App: React.FC = () => {
   return (
@@ -16,8 +15,6 @@ const App: React.FC = () => {
           <img src={reactLogo} className="logo react" alt="React logo" />
         </a>
       </div>
-
-      <Loading />
 
       <a
         href="https://books.google.co.jp/books?uid=100173087971504642758&hl=ja"

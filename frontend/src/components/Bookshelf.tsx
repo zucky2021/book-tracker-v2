@@ -5,6 +5,7 @@ import BookList from "./BookList";
 import { CircleX, Filter, LibraryBig, Save } from "lucide-react";
 import Loading from "./Loading";
 import InfiniteScroll from "react-infinite-scroll-component";
+import { USER_ID } from "../constants/storage_key";
 
 const Bookshelf = () => {
   const [books, setBooks] = useState<GoogleBook[]>([]);
@@ -22,7 +23,7 @@ const Bookshelf = () => {
 
   // ユーザーIDをローカルストレージから取得 無ければdialogを表示して登録を促す
   useEffect(() => {
-    const storedUserId = localStorage.getItem("googleBooksUserId");
+    const storedUserId = localStorage.getItem(USER_ID);
     if (storedUserId) {
       setUserId(storedUserId);
     } else {
@@ -94,11 +95,16 @@ const Bookshelf = () => {
     event.preventDefault();
     const formData = new FormData(event.currentTarget);
     const newUserId = formData.get("userId") as string;
+    if (!/^\d+$/.test(newUserId)) {
+      setError("User ID is invalid");
+      return;
+    }
 
     if (newUserId) {
-      localStorage.setItem("googleBooksUserId", newUserId);
+      localStorage.setItem(USER_ID, newUserId);
       setUserId(newUserId);
       setIsDialogOpen(false);
+      setError(null);
     }
   };
 
@@ -167,12 +173,10 @@ const Bookshelf = () => {
     setCategories(uniqueCategories);
   }, [filteredBooks]);
 
-  const MemorizedBookList = memo(BookList);
-
   return (
     <section id="bookshelf">
       <h2 className="my-3 flex items-center justify-center font-serif text-3xl">
-        <LibraryBig size={24} />
+        <LibraryBig size={24} aria-hidden="true" />
         書棚
       </h2>
 
@@ -183,7 +187,7 @@ const Bookshelf = () => {
           aria-label="Local StorageからGoogle BooksユーザーID削除"
         >
           Delete user ID
-          <CircleX size={18} />
+          <CircleX size={18} aria-hidden="true" />
         </button>
       )}
 
@@ -225,11 +229,13 @@ const Bookshelf = () => {
 
       <form>
         <fieldset className="mx-auto my-2 w-[80%] min-w-72 rounded-lg border border-gray-300 p-3">
-          <legend className="flex items-center font-serif text-2xl">
+          <legend id="bookshelf-legend" className="flex items-center font-serif text-2xl">
             書棚選択
-            <LibraryBig size={24} />
+            <LibraryBig size={24} aria-hidden="true" />
           </legend>
+          <label htmlFor="bookshelf-select" className="sr-only">書棚を選択してください</label>
           <select
+            id="bookshelf-select"
             value={shelfId}
             onChange={(e) => {
               setShelfId(Number(e.target.value));
@@ -237,6 +243,7 @@ const Bookshelf = () => {
               setStartIndex(0);
             }}
             aria-label="書棚選択"
+            aria-labelledby="bookshelf-legend"
             className="w-36 rounded-md border border-gray-300 p-2 text-center"
           >
             {Object.entries(BOOKSHELF_IDS).map(([id, name]) => (
@@ -295,7 +302,7 @@ const Bookshelf = () => {
           <p className="my-3 text-center font-serif text-xl">That's all</p>
         }
       >
-        <MemorizedBookList books={filteredBooks} />
+        <BookList books={filteredBooks} />
       </InfiniteScroll>
 
       {error && (
@@ -311,4 +318,4 @@ const Bookshelf = () => {
   );
 };
 
-export default Bookshelf;
+export default memo(Bookshelf);
