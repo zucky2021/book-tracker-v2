@@ -40,7 +40,7 @@ const App: React.FC = () => {
       </div>
 
       <a
-        href="https://books.google.co.jp/books?uid=100173087971504642758&hl=ja"
+        href="https://books.google.co.jp/books"
         target="_blank"
         rel="noopener noreferrer"
         className="text-2xl"
