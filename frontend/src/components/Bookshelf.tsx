@@ -37,7 +37,7 @@ const Bookshelf = () => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
         const response = await fetch(
-          `https://www.googleapis.com/books/v1/users/${userId}/bookshelves/${shelfId}`,
+          `http://localhost:8080/api/bookshelves?userId=${userId}&shelfId=${shelfId}`,
           { signal: controller.signal },
         );
         clearTimeout(timeoutId);
@@ -63,7 +63,7 @@ const Bookshelf = () => {
     const fetchBooks = async () => {
       try {
         const response = await fetch(
-          `https://www.googleapis.com/books/v1/users/${userId}/bookshelves/${shelfId}/volumes?startIndex=${startIndex}&maxResults=${MAX_RESULTS}`,
+          `http://localhost:8080/api/books?userId=${userId}&shelfId=${shelfId}&startIndex=${startIndex}&maxResults=${MAX_RESULTS}`,
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);

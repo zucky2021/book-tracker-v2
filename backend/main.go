@@ -23,6 +23,7 @@ func main() {
 
 	// ルーティング設定
 	r.GET("/health", handlers.HealthCheckHandler(db))
+	r.GET("/api/bookshelves", handlers.GetBookshelvesHandler)
 	r.GET("/api/books", handlers.GetBooksHandler)
 
 	// サーバーを起動（ポート8080）
