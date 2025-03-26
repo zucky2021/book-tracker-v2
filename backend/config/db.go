@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	MAX_RETRIES int = 5
+	maxRetries int = 5 // 非エクスポート定数
 )
 
 func SetupDatabase() (*sql.DB, error) {
@@ -25,7 +25,7 @@ func SetupDatabase() (*sql.DB, error) {
 	var err error
 
 	// リトライ処理
-	for i := 0; i < MAX_RETRIES; i++ {
+	for i := 0; i < maxRetries; i++ {
 		db, err = sql.Open("mysql", dsn)
 		if err == nil {
 			err = db.Ping()
