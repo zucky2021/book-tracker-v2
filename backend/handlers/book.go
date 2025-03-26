@@ -2,41 +2,48 @@ package handlers
 
 import (
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 
 	"github.com/gin-gonic/gin"
 )
 
-// FIXME: 別課題で実装
+func GetBooksHandler(c *gin.Context) {
+	userId := c.Query("userId")
+	shelfId := c.Query("shelfId")
+	startIndex := c.DefaultQuery("startIndex", "0")
+	maxResults := c.DefaultQuery("maxResults", "40")
 
-func GetBooksHandler(apiKey string) gin.HandlerFunc {
-	return func(c *gin.Context) {
-		authToken := c.GetHeader("Authorization")
-		if authToken == "" {
-			c.JSON(http.StatusBadRequest, gin.H{"error": "Authorization token is required"})
-			return
-		}
+	if userId == "" || shelfId == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "userId and shelfId are required"})
+		return
+	}
 
-		shelfID := "7" // My Library の「マイブックス」を指定（変更可能）
-		url := fmt.Sprintf("https://www.googleapis.com/books/v1/mylibrary/bookshelves/%s/volumes?key=%s", shelfID, apiKey)
+	// Google Books APIのURLを構築
+	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY") // 環境変数からAPIキーを取得
+	if apiKey == "" {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Google Books API key is not set"})
+		return
+	}
 
-		req, err := http.NewRequest("GET", url, nil)
-		if err != nil {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Could not create request"})
-			return
-		}
+	url := fmt.Sprintf(
+		"https://www.googleapis.com/books/v1/users/%s/bookshelves/%s/volumes?startIndex=%s&maxResults=%s&key=%s",
+		userId, shelfId, startIndex, maxResults, apiKey,
+	)
 
-		req.Header.Add("Authorization", authToken)
+	// Google Books APIにリクエストを送信
+	resp, err := http.Get(url)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "failed to fetch data from Google Books API"})
+	}
+	defer resp.Body.Close()
 
-		client := &http.Client{}
-		resp, err := client.Do(req)
-		if err != nil || resp.StatusCode != http.StatusOK {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "API request failed"})
-			return
-		}
-
-		defer resp.Body.Close()
-
-		c.JSON(http.StatusOK, gin.H{"message": "Books fetched successfully"})
+	// Google Books APIのレスポンスをそのまま返す
+	c.Status(resp.StatusCode)
+	c.Header("Content-Type", resp.Header.Get("Content-Type"))
+	_, err = io.Copy(c.Writer, resp.Body)
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read response from Google Books API"})
 	}
 }
