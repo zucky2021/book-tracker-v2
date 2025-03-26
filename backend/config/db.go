@@ -32,6 +32,11 @@ func SetupDatabase() (*sql.DB, error) {
 			if err == nil {
 				return db, nil
 			}
+			db.Close()
+		} else {
+			if db != nil {
+				db.Close()
+			}
 		}
 		fmt.Printf("Database connection failed. Retrying in 5 seconds... (%d/5)\n", i+1)
 		time.Sleep(5 * time.Second)
