@@ -34,6 +34,7 @@ func fetchFromGoogleBooksAPI(c *gin.Context, endpoint string) {
 	_, err = io.Copy(c.Writer, resp.Body)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to read response from Google Books API"})
+		return
 	}
 }
 
@@ -54,6 +55,12 @@ func GetBookshelvesHandler(c *gin.Context) {
 	fetchFromGoogleBooksAPI(c, endpoint)
 }
 
+// GetBooksHandler は指定されたユーザーIDと棚IDの本の一覧を取得します。
+// クエリパラメータ:
+// - userId: Google BooksのユーザーID
+// - shelfId: 取得する本棚のID
+// - startIndex: 結果の開始インデックス（デフォルト: 0）
+// - maxResults: 返す結果の最大数（デフォルト: 40）
 func GetBooksHandler(c *gin.Context) {
 	userId := c.Query("userId")
 	shelfId := c.Query("shelfId")
