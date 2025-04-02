@@ -44,6 +44,7 @@ services:
     build:
       context: ./db
       dockerfile: Dockerfile
+    container_name: book-tracker-db
     networks:
       - app-networks
     volumes: # コンテナの外部に保管する
