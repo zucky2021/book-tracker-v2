@@ -5,28 +5,34 @@ import (
 	"log"
 
 	"backend/config"
-	"backend/handlers"
+	"backend/controller"
+	"backend/infrastructure"
+	"backend/infrastructure/repository"
+	"backend/presenter"
+	"backend/usecase"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	db, err := config.SetupDatabase()
-	if err != nil {
-		log.Fatalf("Could not connect to the database: %v", err)
-	}
-	defer db.Close()
+	db := infrastructure.ConnectDB()
+	defer func () {
+		if err := db.Close(); err != nil {
+			log.Printf("Failed to close database connection: %v", err)
+		}
+	}()
 
 	r := gin.Default()
 
 	config.SetupCORS(r)
 
-	// ルーティング設定
-	r.GET("/health", handlers.HealthCheckHandler(db))
-	r.GET("/api/bookshelves", handlers.GetBookshelvesHandler)
-	r.GET("/api/books", handlers.GetBooksHandler)
+	bookRepo := repository.NewBookRepository()
+	bookUsecase := usecase.NewBookUseCase(bookRepo)
+	bookController := controller.NewBookController(bookUsecase)
+	bookPresenter := presenter.NewBookPresenter()
 
-	// サーバーを起動（ポート8080）
+	infrastructure.InitRouter(r, bookController, bookPresenter)
+
 	fmt.Println("Starting server on :8080")
 	if err := r.Run(":8080"); err != nil {
 		fmt.Printf("Failed to start server: %v\n", err)
