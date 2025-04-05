@@ -1,10 +1,11 @@
 package domain
 
 type Bookshelf struct {
-	ID    string
-	Title string
+	ID          int    `json:"id"`
+	Title       string `json:"title"`
+	VolumeCount int    `json:"volumeCount"`
 }
 
 type BookshelfRepository interface {
-	GetBookshelves(userId string) ([]Bookshelf, error)
+	FindById(userId string, shelfId int) (*Bookshelf, error)
 }

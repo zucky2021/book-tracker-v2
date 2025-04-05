@@ -16,7 +16,7 @@ func NewBookController(bookUseCase *usecase.BookUseCase) *BookController {
 	}
 }
 
-func (c *BookController) GetBooks(queryParams map[string]string) ([]domain.Book, error) {
+func (b *BookController) GetBooks(queryParams map[string]string) ([]domain.Book, error) {
 	// クエリパラメータを処理
 	userId := queryParams["userId"]
 
@@ -36,5 +36,5 @@ func (c *BookController) GetBooks(queryParams map[string]string) ([]domain.Book,
 	}
 
 	// ユースケース層を呼び出し
-	return c.BookUseCase.GetBooks(userId, shelfId, startIndex, maxResults)
+	return b.BookUseCase.GetBooks(userId, shelfId, startIndex, maxResults)
 }

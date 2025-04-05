@@ -7,7 +7,13 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func InitRouter(r *gin.Engine, bookController *controller.BookController, bookPresenter *presenter.BookPresenter) {
+func InitRouter(
+	r *gin.Engine,
+	bookController *controller.BookController,
+	bookPresenter *presenter.BookPresenter,
+	bookshelfController *controller.BookshelfController,
+	bookshelfPresenter *presenter.BookshelfPresenter,
+) {
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{"status": "ok"})
 	})
@@ -22,11 +28,24 @@ func InitRouter(r *gin.Engine, bookController *controller.BookController, bookPr
 
 		books, err := bookController.GetBooks(queryParams)
 		if err != nil {
-
 			c.JSON(500, gin.H{"error": err.Error()})
 			return
 		}
 
 		bookPresenter.PresentBooks(c, books, err)
+	})
+
+	r.GET("api/bookshelf", func(c *gin.Context) {
+		queryParams := map[string]string{
+			"userId": c.Query("userId"),
+			"shelfId": c.Query("shelfId"),
+		}
+
+		bookshelf, err := bookshelfController.GetBookshelf(queryParams)
+		if err != nil {
+			c.JSON(500, gin.H{"error": err.Error()})
+		}
+
+		bookshelfPresenter.PresentBookshelf(c, *bookshelf, err)
 	})
 }

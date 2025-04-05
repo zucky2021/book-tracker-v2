@@ -37,7 +37,7 @@ const Bookshelf = () => {
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 5000);
         const response = await fetch(
-          `http://localhost:8080/api/bookshelves?userId=${userId}&shelfId=${shelfId}`,
+          `http://localhost:8080/api/bookshelf?userId=${userId}&shelfId=${shelfId}`,
           { signal: controller.signal },
         );
         clearTimeout(timeoutId);
