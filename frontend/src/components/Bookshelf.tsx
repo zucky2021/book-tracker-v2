@@ -69,7 +69,7 @@ const Bookshelf = () => {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        const fetchedBooks = data.items || [];
+        const fetchedBooks = data.books || [];
 
         setBooks((prevBooks) => {
           const newBooks = [...prevBooks, ...fetchedBooks];

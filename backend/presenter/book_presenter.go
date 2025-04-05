@@ -19,5 +19,7 @@ func (p *BookPresenter) PresentBooks(c *gin.Context, books []domain.Book, err er
 		return
 	}
 
-	c.JSON(http.StatusOK, books)
+	c.JSON(http.StatusOK, gin.H{
+		"books": books,
+	})
 }
