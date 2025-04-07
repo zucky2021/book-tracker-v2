@@ -194,12 +194,14 @@ const Bookshelf = () => {
       <dialog
         ref={dialogRef}
         className="left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 transform rounded-lg p-4 shadow-lg"
+        aria-labelledby="dialog-title"
+        aria-describedby="dialog-description"
         aria-modal="true"
       >
-        <h3 aria-labelledby="dialog-title" className="font-serif text-xl">
+        <h3 id="dialog-title" className="font-serif text-xl">
           Google BooksのユーザーIDを入力してください。
         </h3>
-        <p aria-labelledby="dialog-description" className="my-2 text-lg">
+        <p id="dialog-description" className="my-2 text-lg">
           <a
             href="https://books.google.com/books"
             target="_blank"
