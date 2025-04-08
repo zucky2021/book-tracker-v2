@@ -13,12 +13,7 @@ func NewBookshelfPresenter() *BookshelfPresenter {
 	return &BookshelfPresenter{}
 }
 
-func (bp *BookshelfPresenter) PresentBookshelf(c *gin.Context, bookshelf domain.Bookshelf, err error) {
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
+func (bp *BookshelfPresenter) PresentBookshelf(c *gin.Context, bookshelf domain.Bookshelf) {
 	c.JSON(http.StatusOK, gin.H{
 		"bookshelf": bookshelf,
 	})

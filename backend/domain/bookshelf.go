@@ -7,5 +7,5 @@ type Bookshelf struct {
 }
 
 type BookshelfRepository interface {
-	FindById(userId string, shelfId int) (*Bookshelf, error)
+	FindByID(userId string, shelfId int) (*Bookshelf, error)
 }

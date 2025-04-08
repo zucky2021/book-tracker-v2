@@ -3,7 +3,7 @@ package domain
 type Book struct {
 	ID         string     `json:"id"`
 	SaleInfo   SaleInfo   `json:"saleInfo"`
-	VolumeInfo VolumeInfo `json:"volumeInfo"`
+	VolumeInfo VolumeInfo `json:"volumeInfo"` // 書棚に含まれる書籍の数
 }
 
 type SaleInfo struct {
@@ -25,5 +25,5 @@ type ImageLinks struct {
 }
 type BookRepository interface {
 	// google books apiを使用して本を取得する
-	FindAll(userId string, shelfId int, startIndex int, maxResult int) ([]Book, error)
+	FindAll(userId string, shelfId int, startIndex int, maxResults int) ([]Book, error)
 }

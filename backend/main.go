@@ -18,7 +18,7 @@ func main() {
 	db := infrastructure.ConnectDB()
 	defer func () {
 		if err := db.Close(); err != nil {
-			log.Printf("Failed to close database connection: %v", err)
+			log.Printf("failed to close database connection: %v", err)
 		}
 	}()
 

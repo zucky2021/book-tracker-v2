@@ -15,7 +15,10 @@ func InitRouter(
 	bookshelfPresenter *presenter.BookshelfPresenter,
 ) {
 	r.GET("/health", func(c *gin.Context) {
-		c.JSON(200, gin.H{"status": "ok"})
+		c.JSON(200, gin.H{
+			"status": "ok",
+			"timestamp": c.Request.Header.Get("X-Request-Timestamp"),
+		})
 	})
 
 	r.GET("/api/books", func(c *gin.Context) {
@@ -35,7 +38,7 @@ func InitRouter(
 		bookPresenter.PresentBooks(c, books, err)
 	})
 
-	r.GET("api/bookshelf", func(c *gin.Context) {
+	r.GET("/api/bookshelf", func(c *gin.Context) {
 		queryParams := map[string]string{
 			"userId": c.Query("userId"),
 			"shelfId": c.Query("shelfId"),
@@ -44,8 +47,9 @@ func InitRouter(
 		bookshelf, err := bookshelfController.GetBookshelf(queryParams)
 		if err != nil {
 			c.JSON(500, gin.H{"error": err.Error()})
+			return
 		}
 
-		bookshelfPresenter.PresentBookshelf(c, *bookshelf, err)
+		bookshelfPresenter.PresentBookshelf(c, *bookshelf)
 	})
 }

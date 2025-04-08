@@ -25,8 +25,6 @@ func ConnectDB() *sql.DB {
 	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?charset=utf8mb4&parseTime=True&loc=Local",
 		dbUser, dbPassword, dbHost, dbPort, dbName)
 
-	fmt.Println("DSN:", dsn)
-
 	var db *sql.DB
 	var err error
 	for i := 0; i < maxRetries; i++ {
@@ -42,9 +40,9 @@ func ConnectDB() *sql.DB {
 				return db
 			}
 		}
-		time.Sleep(2 * time.Second)
+		time.Sleep(5 * time.Second)
 	}
 
-	log.Fatalf("MySQLへの接続に失敗しました: DSN: %s, 最後のエラー: %v", dsn, err)
+	log.Fatalf("MySQLへの接続に失敗しました: %v", err)
 	return nil
 }

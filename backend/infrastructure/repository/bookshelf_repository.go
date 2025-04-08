@@ -2,19 +2,19 @@ package repository
 
 import (
 	"backend/domain"
+	"encoding/json"
 	"fmt"
 	"net/http"
-	"encoding/json"
 	"os"
 )
 
-type BookshelfRepositoryImpl struct {}
+type BookshelfRepositoryImpl struct{}
 
 func NewBookshelfRepository() domain.BookshelfRepository {
 	return &BookshelfRepositoryImpl{}
 }
 
-func (r *BookshelfRepositoryImpl) FindById(userId string, shelfId int) (*domain.Bookshelf, error) {
+func (r *BookshelfRepositoryImpl) FindByID(userId string, shelfId int) (*domain.Bookshelf, error) {
 	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
 
 	uri := fmt.Sprintf(

@@ -13,7 +13,7 @@ func NewGetBookshelf(bookshelfRepo domain.BookshelfRepository) *GetBookshelf {
 }
 
 func (gb *GetBookshelf) GetBookshelf(userId string, shelfId int) (*domain.Bookshelf, error) {
-	bookshelf, err := gb.bookshelfRepo.FindById(userId, shelfId)
+	bookshelf, err := gb.bookshelfRepo.FindByID(userId, shelfId)
 	if err != nil {
 		return nil, err
 	}
