@@ -61,9 +61,12 @@ const Bookshelf = () => {
   // ユーザーIDが取得できたら、Google Books APIを利用して読み込み中を表示
   useEffect(() => {
     const fetchBooks = async () => {
+      const controller = new AbortController();
+      const signal = controller.signal;
       try {
         const response = await fetch(
           `http://localhost:8080/api/books?userId=${userId}&shelfId=${shelfId}&startIndex=${startIndex}&maxResults=${MAX_RESULTS}`,
+          { signal },
         );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
@@ -83,6 +86,10 @@ const Bookshelf = () => {
       } catch (err) {
         setError("書籍データの取得に失敗しました");
         console.error(err);
+      }
+
+      return () => {
+        controller.abort();
       }
     };
 
