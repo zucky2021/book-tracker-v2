@@ -3,37 +3,41 @@ package main
 import (
 	"fmt"
 	"log"
-	"os"
 
 	"backend/config"
-	"backend/handlers"
+	"backend/controller"
+	"backend/infrastructure"
+	"backend/infrastructure/repository"
+	"backend/presenter"
+	"backend/usecase"
 
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	// 環境変数から直接APIキーを取得
-	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
-	if apiKey == "" {
-		fmt.Println("GOOGLE_BOOKS_API_KEY is not set")
-		return
-	}
-
-	db, err := config.SetupDatabase()
-	if err != nil {
-		log.Fatalf("Could not connect to the database: %v", err)
-	}
-	defer db.Close()
+	db := infrastructure.ConnectDB()
+	defer func () {
+		if err := db.Close(); err != nil {
+			log.Printf("failed to close database connection: %v", err)
+		}
+	}()
 
 	r := gin.Default()
 
 	config.SetupCORS(r)
 
-	// ルーティング設定
-	r.GET("/health", handlers.HealthCheckHandler(db))
-	r.GET("/api/books", handlers.GetBooksHandler(apiKey))
+	bookRepo := repository.NewBookRepository()
+	bookUsecase := usecase.NewBookUseCase(bookRepo)
+	bookController := controller.NewBookController(bookUsecase)
+	bookPresenter := presenter.NewBookPresenter()
 
-	// サーバーを起動（ポート8080）
+	bookshelfRepo := repository.NewBookshelfRepository()
+	getBookshelf := usecase.NewGetBookshelf(bookshelfRepo)
+	bookshelfController := controller.NewBookshelfController(getBookshelf)
+	bookshelfPresenter := presenter.NewBookshelfPresenter()
+
+	infrastructure.InitRouter(r, bookController, bookPresenter, bookshelfController, bookshelfPresenter)
+
 	fmt.Println("Starting server on :8080")
 	if err := r.Run(":8080"); err != nil {
 		fmt.Printf("Failed to start server: %v\n", err)

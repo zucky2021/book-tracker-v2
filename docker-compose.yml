@@ -3,14 +3,16 @@ services:
     build:
       context: ./frontend # フロントエンドプロジェクトのディレクトリ
       dockerfile: Dockerfile # 使用するDockerfile
+    networks:
+      - app-networks # ネットワークを指定
     volumes:
-      - ./frontend:/app # フロントエンドのソースコードの変更をコンテナに即時反映
+      - ./frontend:/app # フロントエンドのソースコードの変更をコンテナにバインドマウント
       - /app/node_modules # node_modulesを永続化するためのボリューム
     environment: # Dockerコンテナ内で利用可能な環境変数を設定する
       - NODE_ENV=development # 開発環境として設定
       - FAST_REFRESH=true # Viteの高速リフレッシュ機能を有効化
-      - VITE_ENDPOINT=$ENDPOINT # APIエンドポイントのURL
-      - VITE_API_VERSION=$API_VERSION # APIバージョン
+      - CHOKIDAR_USEPOLLING=true # ファイル変更検知を有効化
+      - CHOKIDAR_INTERVAL=1000 # ファイル変更検知の間隔ms
     env_file:
       - .env # 参照するenvファイルを指定
     command: npm run dev # アプリケーションの実行コマンドを指定する
@@ -26,6 +28,8 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+    networks:
+      - app-networks
     volumes:
       - ./backend:/app
     ports:
@@ -40,6 +44,9 @@ services:
     build:
       context: ./db
       dockerfile: Dockerfile
+    container_name: book-tracker-db
+    networks:
+      - app-networks
     volumes: # コンテナの外部に保管する
       - mysql-data-dev:/var/lib/mysql # データベースデータを永続化するボリューム
     environment:
@@ -50,7 +57,17 @@ services:
     ports:
       - "3306:3306"
     restart: always # コンテナが停止した場合に自動的に再起動
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
 
 # ボリュームの定義
 volumes:
   mysql-data-dev: # db の volume の名前を定義
+
+networks:
+  app-networks: # ネットワークの名前を指定
+    driver: bridge # ドライバーを指定

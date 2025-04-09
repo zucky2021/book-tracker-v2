@@ -17,6 +17,9 @@
     "premparihar.gotestexplorer",
     "britesnow.vscode-toggle-quotes",
     "ms-vscode-remote.remote-containers",
-    "bierner.markdown-mermaid"
+    "bierner.markdown-mermaid",
+    "bradlc.vscode-tailwindcss",
+    "christian-kohler.npm-intellisense",
+    "davidanson.vscode-markdownlint"
   ]
 }
