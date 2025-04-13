@@ -12,6 +12,9 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
+# 権限の修正
+RUN chmod -R 777 /go/pkg/mod
+
 # Air: ホットリロード
 # Swag: APIドキュメントの生成
 RUN go install github.com/air-verse/air@latest && \

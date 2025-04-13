@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"backend/config"
 	"backend/controller"
+	"backend/domain"
 	"backend/infrastructure"
+	"backend/infrastructure/config"
 	"backend/infrastructure/repository"
 	"backend/presenter"
 	"backend/usecase"
@@ -15,12 +16,16 @@ import (
 )
 
 func main() {
-	db := infrastructure.ConnectDB()
-	defer func () {
-		if err := db.Close(); err != nil {
-			log.Printf("failed to close database connection: %v", err)
-		}
-	}()
+	db := config.GetDB()
+
+	log.Println("変更が反映されない")
+	
+
+	if err := db.AutoMigrate(&domain.Memo{}); err != nil {
+		log.Fatalf("failed to migrate database: %v", err)
+	} else {
+		log.Println("database migrated successfully")
+	}
 
 	r := gin.Default()
 
