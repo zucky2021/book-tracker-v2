@@ -1,0 +1,20 @@
+#!/bin/bash
+
+# GO Format
+echo "Running gofmt..."
+gofmt -s -w .
+if [ $? -ne 0 ]; then
+  echo "gofmt failed. Please fix the formatting issues before committing."
+  exit 1
+fi
+
+# GO Lint
+echo "Running golangci-lint..."
+docker-compose run -T --rm lint
+if [ $? -ne 0 ];then
+  echo "golangci-lint failed. Please fix the issues before committing."
+  exit 1
+fi
+
+echo "Static analysis passed."
+exit 0

@@ -1,0 +1,16 @@
+version: 2
+
+run:
+  timeout: 5m
+linters:
+  # NOTE:Check the detail with this command ```docker-compose run --rm lint golangci-lint help linters```
+  enable:
+  - govet
+  - staticcheck
+  - errcheck
+  - unused
+issues:
+  exclude-rules:
+    - path: _test\.go
+      linters:
+        - errcheck
