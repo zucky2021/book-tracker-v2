@@ -17,15 +17,15 @@ import (
 
 func main() {
 	db := config.GetDB()
-
-	log.Println("変更が反映されない")
-	
-
-	if err := db.AutoMigrate(&domain.Memo{}); err != nil {
-		log.Fatalf("failed to migrate database: %v", err)
-	} else {
-		log.Println("database migrated successfully")
+	modelsToMigrate := []interface{}{
+		&domain.Memo{},
 	}
+	for _, model := range modelsToMigrate {
+		if err := db.AutoMigrate(model); err != nil {
+			log.Fatalf("failed to migrate model %T: %v", model, err)
+		}
+	}
+	log.Println("all database migrations completed successfully")
 
 	r := gin.Default()
 

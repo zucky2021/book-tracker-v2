@@ -5,7 +5,7 @@ import "time"
 type Memo struct {
 	ID uint `gorm:"primaryKey"`
 	UserID string `gorm:"size:255;not null;uniqueIndex:idx_user_book"`
-	BookID string `;gorm:"size:255;not null;uniqueIndex:idx_user_book"`
+	BookID string `gorm:"size:255;not null;uniqueIndex:idx_user_book"`
 	Text string `gorm:"type:text;not null"`
 	CreatedAt time.Time
 	UpdatedAt time.Time

@@ -13,7 +13,8 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 # 権限の修正
-RUN chmod -R 777 /go/pkg/mod
+RUN chown -R appuser:appuser /go/pkg/mod && \
+  chmod -R 755 /go/pkg/mod
 
 # Air: ホットリロード
 # Swag: APIドキュメントの生成
@@ -35,5 +36,5 @@ USER appuser
 # airを使ってアプリケーションを実行
 CMD ["air"]
 
-# 本番用のビルドステージ TODO:適宜のビルドを追加
+# TODO:適宜のビルドを追加 本番用のビルドステージ
 FROM build AS production
