@@ -2,14 +2,42 @@ root = "."
 tmp_dir = "tmp"
 
 [build]
+# バイナリファイルの生成
 cmd = "go build -o ./tmp/main ."
 bin = "./tmp/main"
-include_ext = ["go", "tpl", "tmpl", "html"]
-exclude_dir = ["assets", "tmp", "vendor"]
+# フルパスで出力
+full_bin = "./tmp/main"
+
+# 監視対象の設定
+include_ext = ["go", "mod", "sum"]
+include_dir = ["controller", "domain", "infrastructure", "presenter", "usecase", "utility"]
+exclude_dir = ["tmp", "vendor", "docs"]
+exclude_file = []
+
+# 遅延時間（ミリ秒）
 delay = 1000
 
+# エラー時の動作
+stop_on_error = true
+send_interrupt = true
+
+# ログ出力設定
+log = "air.log"
+log_prefix = true
+
 [log]
+# ログにタイムスタンプを表示
 time = true
+
+[color]
+main = "yellow"
+watcher = "cyan"
+build = "green"
+runner = "magenta"
 
 [screen]
 clear_on_rebuild = true
+
+[misc]
+# 終了時にtmpディレクトリをクリーン
+clean_on_exit = true
