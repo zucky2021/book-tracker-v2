@@ -12,6 +12,10 @@ WORKDIR /app
 COPY go.mod go.sum ./
 RUN go mod download
 
+# 権限の修正
+RUN chown -R appuser:appuser /go/pkg/mod && \
+  chmod -R 755 /go/pkg/mod
+
 # Air: ホットリロード
 # Swag: APIドキュメントの生成
 RUN go install github.com/air-verse/air@latest && \
@@ -32,5 +36,5 @@ USER appuser
 # airを使ってアプリケーションを実行
 CMD ["air"]
 
-# 本番用のビルドステージ TODO:適宜のビルドを追加
+# TODO:適宜のビルドを追加 本番用のビルドステージ
 FROM build AS production

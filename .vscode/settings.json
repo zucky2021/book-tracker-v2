@@ -2,6 +2,7 @@
   "editor.tabSize": 2,
   "cSpell.words": [
     "coderabbit",
+    "gorm",
     "noopener",
     "noreferrer",
     "peaceiris",
@@ -16,7 +17,7 @@
   "editor.renderWhitespace": "boundary",
   "indentRainbow.indentSetter": {
     "[json]": 2,
-    "[go": 2
+    "[go]": 2
   },
   "[go]": {
     "editor.tabSize": 2,

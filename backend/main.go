@@ -4,9 +4,10 @@ import (
 	"fmt"
 	"log"
 
-	"backend/config"
 	"backend/controller"
+	"backend/domain"
 	"backend/infrastructure"
+	"backend/infrastructure/config"
 	"backend/infrastructure/repository"
 	"backend/presenter"
 	"backend/usecase"
@@ -15,12 +16,16 @@ import (
 )
 
 func main() {
-	db := infrastructure.ConnectDB()
-	defer func () {
-		if err := db.Close(); err != nil {
-			log.Printf("failed to close database connection: %v", err)
+	db := config.GetDB()
+	modelsToMigrate := []interface{}{
+		&domain.Memo{},
+	}
+	for _, model := range modelsToMigrate {
+		if err := db.AutoMigrate(model); err != nil {
+			log.Fatalf("failed to migrate model %T: %v", model, err)
 		}
-	}()
+	}
+	log.Println("all database migrations completed successfully")
 
 	r := gin.Default()
 
