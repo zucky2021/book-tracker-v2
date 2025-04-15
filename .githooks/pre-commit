@@ -2,7 +2,7 @@
 
 # GO Format
 echo "Running gofmt..."
-gofmt -s -w .
+docker-compose run -T --rm backend sh -c "cd /app && gofmt -s -w ."
 if [ $? -ne 0 ]; then
   echo "gofmt failed. Please fix the formatting issues before committing."
   exit 1

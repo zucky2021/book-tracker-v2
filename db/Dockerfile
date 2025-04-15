@@ -1,4 +1,4 @@
-FROM mysql:9.3 AS build
+FROM mysql:8.4 AS build
 
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
   CMD mysqladmin ping -h localhost -u root -p${MYSQL_ROOT_PASSWORD} || exit 1
