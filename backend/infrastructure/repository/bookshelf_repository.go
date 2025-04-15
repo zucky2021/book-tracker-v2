@@ -4,6 +4,7 @@ import (
 	"backend/domain"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"os"
 )
@@ -26,7 +27,11 @@ func (r *BookshelfRepositoryImpl) FindByID(userId string, shelfId int) (*domain.
 	if err != nil {
 		return nil, err
 	}
-	defer resp.Body.Close()
+	defer func() {
+		if err := resp.Body.Close(); err != nil {
+			log.Printf("failed to close response body: %v", err)
+		}
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return nil, fmt.Errorf("failed to fetch bookshelf: status code %d", resp.StatusCode)
