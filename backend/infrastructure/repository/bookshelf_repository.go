@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"net/url"
 	"os"
 )
 
@@ -18,12 +19,17 @@ func NewBookshelfRepository() domain.BookshelfRepository {
 func (r *BookshelfRepositoryImpl) FindByID(userId string, shelfId int) (*domain.Bookshelf, error) {
 	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
 
-	uri := fmt.Sprintf(
-		"https://www.googleapis.com/books/v1/users/%s/bookshelves/%d?key=%s",
-		userId, shelfId, apiKey,
-	)
+	baseURL := "https://www.googleapis.com/books/v1/users"
+	u, err := url.Parse(fmt.Sprintf("%s/%s/bookshelves/%d", baseURL, userId, shelfId))
+	if err != nil {
+		return nil, fmt.Errorf("failed to parse URL: %w", err)
+	}
 
-	resp, err := http.Get(uri)
+	q := u.Query()
+	q.Set("key", apiKey)
+	u.RawQuery = q.Encode()
+
+	resp, err := http.Get(u.String())
 	if err != nil {
 		return nil, err
 	}
