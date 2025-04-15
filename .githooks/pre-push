@@ -1,0 +1,20 @@
+#!/bin/bash
+
+echo "Running tests with coverage..."
+
+# プロジェクトのルートディレクトリから相対パスでbatchディレクトリに移動
+cd "$(git rev-parse --show-toplevel)/backend" || {
+  echo "Failed to change directory to backend/"
+  exit 1
+}
+
+# テストの実行（batchディレクトリ内で実行）
+go test ./... -cover
+TEST_RESULT=$?
+if [ $TEST_RESULT -ne 0 ]; then
+  echo "Tests failed. Push rejected."
+  exit 1
+fi
+
+echo "All tests passed."
+exit 0
