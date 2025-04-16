@@ -15,6 +15,20 @@ npm create vite@latest frontend -- --template react-swc-ts \
 && npm run dev
 ```
 
+## Githooks 共有化
+
+### 実行権限を付与
+
+```bash
+chmod +x .githooks/*
+```
+
+### Git の設定で上記のディレクトリを有効化
+
+```bash
+git config core.hooksPath .githooks
+```
+
 ## DB接続確認
 
 ```bash

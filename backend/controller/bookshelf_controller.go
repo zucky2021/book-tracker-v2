@@ -6,7 +6,6 @@ import (
 	"strconv"
 )
 
-
 type BookshelfController struct {
 	getBookshelf *usecase.GetBookshelf
 }

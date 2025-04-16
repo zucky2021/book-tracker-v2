@@ -1,0 +1,37 @@
+version: 2
+
+run:
+  timeout: 5m
+  tests: false
+  modules-download-mode: readonly
+  go: "1.24"
+
+linters:
+  # 全てのリンターを一旦無効化
+  disable-all: true
+  # 必要なリンターのみを有効化
+  enable:
+    # 基本的な静的解析
+    - govet # Goの一般的な問題の検出
+    - staticcheck # 高度な静的解析
+    - errcheck # エラーハンドリングのチェック
+    - unused # 未使用コードの検出
+
+    # コード品質
+    - ineffassign # 無効な代入の検出
+    - bodyclose # レスポンスボディのクローズ漏れ検出
+
+    # セキュリティ
+    - gosec # セキュリティ問題の検出
+
+    # その他の有用なチェック
+    - misspell # スペルミスの検出
+    - dogsled # 未使用の変数の検出
+    - gocritic # コードの批評
+
+issues:
+  exclude-rules:
+    # テストファイルではエラーチェックを緩和
+    - path: _test\.go
+      linters:
+        - errcheck

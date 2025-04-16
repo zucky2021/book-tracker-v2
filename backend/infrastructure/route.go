@@ -16,7 +16,7 @@ func InitRouter(
 ) {
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
-			"status": "ok",
+			"status":    "ok",
 			"timestamp": c.Request.Header.Get("X-Request-Timestamp"),
 		})
 	})
@@ -40,7 +40,7 @@ func InitRouter(
 
 	r.GET("/api/bookshelf", func(c *gin.Context) {
 		queryParams := map[string]string{
-			"userId": c.Query("userId"),
+			"userId":  c.Query("userId"),
 			"shelfId": c.Query("shelfId"),
 		}
 
