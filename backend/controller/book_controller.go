@@ -36,5 +36,5 @@ func (b *BookController) GetBooks(queryParams map[string]string) ([]domain.Book,
 	}
 
 	// ユースケース層を呼び出し
-	return b.BookUseCase.GetBooks(userId, shelfId, startIndex, maxResults)
+	return b.BookUseCase.Execute(userId, shelfId, startIndex, maxResults)
 }
