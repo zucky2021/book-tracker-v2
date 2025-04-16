@@ -22,13 +22,13 @@ func TestGetBooks(t *testing.T) {
 	t.Run("successfully retrieves books", func(t *testing.T) {
 		expectedBooks := []domain.Book{
 			{
-				ID: "1",
-				SaleInfo: domain.SaleInfo{},
+				ID:         "1",
+				SaleInfo:   domain.SaleInfo{},
 				VolumeInfo: domain.VolumeInfo{},
 			},
 			{
-				ID: "2",
-				SaleInfo: domain.SaleInfo{},
+				ID:         "2",
+				SaleInfo:   domain.SaleInfo{},
 				VolumeInfo: domain.VolumeInfo{},
 			},
 		}
