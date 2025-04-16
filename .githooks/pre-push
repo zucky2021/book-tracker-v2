@@ -1,8 +1,6 @@
 #!/bin/bash
 
-echo "Running tests with coverage..."
-
-# テストの実行（batchディレクトリ内で実行）
+echo "Running go unit tests with coverage..."
 docker-compose run -T --rm backend sh -c "cd /app && go test ./... -cover -v"
 TEST_RESULT=$?
 if [ $TEST_RESULT -ne 0 ]; then

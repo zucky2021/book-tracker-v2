@@ -47,6 +47,21 @@ func TestGetBooks(t *testing.T) {
 		}
 	})
 
+	t.Run("handles empty results", func(t *testing.T) {
+		mockRepo.MockFindAll = func(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
+			return []domain.Book{}, nil
+		}
+
+		books, err := useCase.Execute("user1", 1, 0, 10)
+		if err != nil {
+			t.Fatalf("expected no error, got %v", err)
+		}
+
+		if len(books) != 0 {
+			t.Errorf("expected empty result, got %v", books)
+		}
+	})
+
 	t.Run("returns error when repository fails", func(t *testing.T) {
 		mockRepo.MockFindAll = func(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
 			return nil, errors.New("repository error")
