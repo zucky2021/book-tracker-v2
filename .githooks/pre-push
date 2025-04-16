@@ -2,14 +2,8 @@
 
 echo "Running tests with coverage..."
 
-# プロジェクトのルートディレクトリから相対パスでbatchディレクトリに移動
-cd "$(git rev-parse --show-toplevel)/backend" || {
-  echo "Failed to change directory to backend/"
-  exit 1
-}
-
 # テストの実行（batchディレクトリ内で実行）
-go test ./... -cover
+docker-compose run --rm backend sh -c "cd /app && go test ./... -cover -v"
 TEST_RESULT=$?
 if [ $TEST_RESULT -ne 0 ]; then
   echo "Tests failed. Push rejected."
