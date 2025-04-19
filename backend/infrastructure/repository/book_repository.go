@@ -11,17 +11,18 @@ import (
 	"backend/domain"
 )
 
-type BookRepositoryImpl struct{}
-
-func NewBookRepository() domain.BookRepository {
-	return &BookRepositoryImpl{}
+type BookRepositoryImpl struct {
+	baseURL string
 }
 
-func (r *BookRepositoryImpl) FindAll(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
+func NewBookRepository(baseURL string) domain.BookRepository {
+	return &BookRepositoryImpl{baseURL: baseURL}
+}
+
+func (br *BookRepositoryImpl) FindAll(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
 	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
 
-	baseURL := "https://www.googleapis.com/books/v1/users"
-	u, err := url.Parse(fmt.Sprintf("%s/%s/bookshelves/%d/volumes", baseURL, userId, shelfId))
+	u, err := url.Parse(fmt.Sprintf("%s/users/%s/bookshelves/%d/volumes", br.baseURL, userId, shelfId))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse URL: %w", err)
 	}

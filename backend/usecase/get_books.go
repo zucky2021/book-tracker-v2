@@ -14,7 +14,7 @@ func NewBookUseCase(bookRepo domain.BookRepository) *BookUseCase {
 	}
 }
 
-func (u *BookUseCase) GetBooks(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
+func (u *BookUseCase) Execute(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
 	books, err := u.BookRepo.FindAll(userId, shelfId, startIndex, maxResults)
 	if err != nil {
 		return nil, err
