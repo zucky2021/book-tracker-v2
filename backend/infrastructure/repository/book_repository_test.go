@@ -4,49 +4,12 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"net/url"
-	"os"
 	"testing"
 
 	"backend/domain"
 )
 
-// テスト用BookRepositoryImpl（baseURLを差し替え可能にする）
-type testBookRepositoryImpl struct {
-	baseURL string
-}
-
-func (r *testBookRepositoryImpl) FindAll(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
-	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
-	u, _ := url.Parse(r.baseURL + "/" + userId + "/bookshelves/1/volumes")
-	q := u.Query()
-	q.Set("startIndex", "0")
-	q.Set("maxResults", "10")
-	q.Set("key", apiKey)
-	u.RawQuery = q.Encode()
-
-	resp, err := http.Get(u.String())
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, err
-	}
-
-	var result struct {
-		Items []domain.Book `json:"items"`
-	}
-	err = json.NewDecoder(resp.Body).Decode(&result)
-	if err != nil {
-		return nil, err
-	}
-	return result.Items, nil
-}
-
 func TestBookRepositoryImpl_FindAll(t *testing.T) {
-	// モックサーバーを作成
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
@@ -59,9 +22,9 @@ func TestBookRepositoryImpl_FindAll(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	repo := &testBookRepositoryImpl{baseURL: ts.URL + "/users"}
+	repo := NewBookRepository(ts.URL + "/users")
 
-	books, err := repo.FindAll("testuser", 1, 0, 10)
+	books, err := repo.FindAll("tester", 1, 0, 10)
 	if err != nil {
 		t.Fatalf("expected no error, got %v", err)
 	}
