@@ -10,7 +10,7 @@ import (
 	"os"
 )
 
-type BookshelfRepositoryImpl struct{
+type BookshelfRepositoryImpl struct {
 	baseURL string
 }
 
