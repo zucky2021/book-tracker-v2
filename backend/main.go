@@ -16,12 +16,12 @@ import (
 )
 
 func main() {
-	db := config.GetDBConnections()
+	dbConns := config.GetDBConnections()
 	modelsToMigrate := []interface{}{
 		&domain.Memo{},
 	}
 	for _, model := range modelsToMigrate {
-		if err := db.Writer.AutoMigrate(model); err != nil {
+		if err := dbConns.Writer.AutoMigrate(model); err != nil {
 			log.Fatalf("failed to migrate model %T: %v", model, err)
 		}
 	}

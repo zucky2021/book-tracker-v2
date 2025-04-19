@@ -85,6 +85,9 @@ func connectDB(config *DBConfig) (*gorm.DB, error) {
 			if err != nil {
 				return nil, fmt.Errorf("failed to get sql.DB from gorm.DB: %v", err)
 			}
+			if pingErr := sqlDB.Ping(); pingErr != nil {
+				return nil, fmt.Errorf("failed to ping database: %v", pingErr)
+			}
 			sqlDB.SetMaxIdleConns(maxIdleConns)
 			sqlDB.SetMaxOpenConns(maxOpenConns)
 			sqlDB.SetConnMaxLifetime(maxConnLifetime)
@@ -93,7 +96,7 @@ func connectDB(config *DBConfig) (*gorm.DB, error) {
 			return db, nil
 		}
 
-		time.Sleep(5 * time.Second)
+		time.Sleep(retryInterval)
 	}
 
 	return nil, err
