@@ -16,6 +16,10 @@ type BookRepositoryImpl struct {
 }
 
 func NewBookRepository(baseURL string) domain.BookRepository {
+	if baseURL == "" {
+		log.Fatalf("baseURL is required")
+	}
+
 	return &BookRepositoryImpl{baseURL: baseURL}
 }
 

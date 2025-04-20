@@ -8,8 +8,17 @@ import (
 	"testing"
 )
 
-func TestBookshelfRepositoryImpl_FindAll(t *testing.T) {
+func TestBookshelfRepositoryImpl_FindByID(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		expectedPath := "/users/tester/bookshelves/2"
+		if r.URL.Path != expectedPath {
+			t.Errorf("expected path %s, got %s", expectedPath, r.URL.Path)
+		}
+
+		if apiKey := r.URL.Query().Get("key"); apiKey != "" {
+			t.Error("expected API key in query parameters")
+		}
+
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(domain.Bookshelf{
@@ -20,7 +29,7 @@ func TestBookshelfRepositoryImpl_FindAll(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	repo := NewBookshelfRepository(ts.URL + "/users")
+	repo := NewBookshelfRepository(ts.URL)
 
 	bookshelf, err := repo.FindByID("tester", 2)
 	if err != nil {
@@ -31,5 +40,16 @@ func TestBookshelfRepositoryImpl_FindAll(t *testing.T) {
 	}
 	if bookshelf.ID != 2 || bookshelf.Title != "To read" || bookshelf.VolumeCount != 1 {
 		t.Errorf("unexpected bookshelf: %+v", bookshelf)
+	}
+}
+
+func TestBookshelfRepositoryImpl_FindByID_HTTPError(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
+	ts.Close()
+
+	repo := NewBookshelfRepository(ts.URL)
+
+	if _, err := repo.FindByID("tester", 2); err == nil {
+		t.Error(("expected error, got nil"))
 	}
 }
