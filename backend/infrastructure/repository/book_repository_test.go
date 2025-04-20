@@ -4,12 +4,15 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"os"
 	"testing"
 
 	"backend/domain"
 )
 
 func TestBookRepositoryImpl_FindAll(t *testing.T) {
+	os.Setenv("GOOGLE_BOOKS_API_KEY", "dummy-key")
+
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		expectedPath := "/users/tester/bookshelves/1/volumes"
 		if r.URL.Path != expectedPath {
@@ -22,7 +25,7 @@ func TestBookRepositoryImpl_FindAll(t *testing.T) {
 		if maxResults := r.URL.Query().Get("maxResults"); maxResults != "10" {
 			t.Errorf("expected maxResults=10, got %s", maxResults)
 		}
-		if apiKey := r.URL.Query().Get("key"); apiKey != "" {
+		if apiKey := r.URL.Query().Get("key"); apiKey == "" {
 			t.Error("expected API key in query parameters")
 		}
 

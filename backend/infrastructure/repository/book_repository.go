@@ -13,6 +13,7 @@ import (
 
 type BookRepositoryImpl struct {
 	baseURL string
+	apiKey  string
 }
 
 func NewBookRepository(baseURL string) domain.BookRepository {
@@ -20,12 +21,15 @@ func NewBookRepository(baseURL string) domain.BookRepository {
 		log.Fatalf("baseURL is required")
 	}
 
-	return &BookRepositoryImpl{baseURL: baseURL}
+	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
+
+	return &BookRepositoryImpl{
+		baseURL: baseURL,
+		apiKey:  apiKey,
+	}
 }
 
 func (br *BookRepositoryImpl) FindAll(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
-	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
-
 	u, err := url.Parse(fmt.Sprintf("%s/users/%s/bookshelves/%d/volumes", br.baseURL, userId, shelfId))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse URL: %w", err)
@@ -34,7 +38,7 @@ func (br *BookRepositoryImpl) FindAll(userId string, shelfId int, startIndex int
 	q := u.Query()
 	q.Set("startIndex", fmt.Sprintf("%d", startIndex))
 	q.Set("maxResults", fmt.Sprintf("%d", maxResults))
-	q.Set("key", apiKey)
+	q.Set("key", br.apiKey)
 	u.RawQuery = q.Encode()
 
 	resp, err := http.Get(u.String())
