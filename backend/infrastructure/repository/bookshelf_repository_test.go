@@ -11,6 +11,7 @@ import (
 
 func TestBookshelfRepositoryImpl_FindByID(t *testing.T) {
 	os.Setenv("GOOGLE_BOOKS_API_KEY", "dummy-key")
+	defer os.Unsetenv("GOOGLE_BOOKS_API_KEY")
 
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		expectedPath := "/users/tester/bookshelves/2"
@@ -53,6 +54,6 @@ func TestBookshelfRepositoryImpl_FindByID_HTTPError(t *testing.T) {
 	repo := NewBookshelfRepository(ts.URL)
 
 	if _, err := repo.FindByID("tester", 2); err == nil {
-		t.Error(("expected error, got nil"))
+		t.Error("expected error, got nil")
 	}
 }
