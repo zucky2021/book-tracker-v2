@@ -24,5 +24,5 @@ func (bc *BookshelfController) GetBookshelf(queryParams map[string]string) (*dom
 		return nil, err
 	}
 
-	return bc.getBookshelf.GetBookshelf(userId, shelfId)
+	return bc.getBookshelf.Execute(userId, shelfId)
 }

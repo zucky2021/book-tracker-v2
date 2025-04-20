@@ -11,17 +11,26 @@ import (
 	"backend/domain"
 )
 
-type BookRepositoryImpl struct{}
-
-func NewBookRepository() domain.BookRepository {
-	return &BookRepositoryImpl{}
+type BookRepositoryImpl struct {
+	baseURL string
+	apiKey  string
 }
 
-func (r *BookRepositoryImpl) FindAll(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
+func NewBookRepository(baseURL string) domain.BookRepository {
+	if baseURL == "" {
+		log.Fatalf("baseURL is required")
+	}
+
 	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
 
-	baseURL := "https://www.googleapis.com/books/v1/users"
-	u, err := url.Parse(fmt.Sprintf("%s/%s/bookshelves/%d/volumes", baseURL, userId, shelfId))
+	return &BookRepositoryImpl{
+		baseURL: baseURL,
+		apiKey:  apiKey,
+	}
+}
+
+func (br *BookRepositoryImpl) FindAll(userId string, shelfId int, startIndex int, maxResults int) ([]domain.Book, error) {
+	u, err := url.Parse(fmt.Sprintf("%s/users/%s/bookshelves/%d/volumes", br.baseURL, userId, shelfId))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse URL: %w", err)
 	}
@@ -29,7 +38,7 @@ func (r *BookRepositoryImpl) FindAll(userId string, shelfId int, startIndex int,
 	q := u.Query()
 	q.Set("startIndex", fmt.Sprintf("%d", startIndex))
 	q.Set("maxResults", fmt.Sprintf("%d", maxResults))
-	q.Set("key", apiKey)
+	q.Set("key", br.apiKey)
 	u.RawQuery = q.Encode()
 
 	resp, err := http.Get(u.String())

@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"os"
 
 	"backend/controller"
 	"backend/domain"
@@ -16,12 +17,12 @@ import (
 )
 
 func main() {
-	db := config.GetDB()
+	dbConns := config.GetDBConnections()
 	modelsToMigrate := []interface{}{
 		&domain.Memo{},
 	}
 	for _, model := range modelsToMigrate {
-		if err := db.AutoMigrate(model); err != nil {
+		if err := dbConns.Writer.AutoMigrate(model); err != nil {
 			log.Fatalf("failed to migrate model %T: %v", model, err)
 		}
 	}
@@ -31,12 +32,14 @@ func main() {
 
 	config.SetupCORS(r)
 
-	bookRepo := repository.NewBookRepository()
+	googleBooksURL := os.Getenv("GOOGLE_BOOKS_ENDPOINT")
+
+	bookRepo := repository.NewBookRepository(googleBooksURL)
 	bookUsecase := usecase.NewBookUseCase(bookRepo)
 	bookController := controller.NewBookController(bookUsecase)
 	bookPresenter := presenter.NewBookPresenter()
 
-	bookshelfRepo := repository.NewBookshelfRepository()
+	bookshelfRepo := repository.NewBookshelfRepository(googleBooksURL)
 	getBookshelf := usecase.NewGetBookshelf(bookshelfRepo)
 	bookshelfController := controller.NewBookshelfController(getBookshelf)
 	bookshelfPresenter := presenter.NewBookshelfPresenter()

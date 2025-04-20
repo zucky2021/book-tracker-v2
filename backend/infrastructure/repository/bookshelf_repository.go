@@ -10,23 +10,30 @@ import (
 	"os"
 )
 
-type BookshelfRepositoryImpl struct{}
-
-func NewBookshelfRepository() domain.BookshelfRepository {
-	return &BookshelfRepositoryImpl{}
+type BookshelfRepositoryImpl struct {
+	baseURL string
+	apiKey  string
 }
 
-func (r *BookshelfRepositoryImpl) FindByID(userId string, shelfId int) (*domain.Bookshelf, error) {
-	apiKey := os.Getenv("GOOGLE_BOOKS_API_KEY")
+func NewBookshelfRepository(baseURL string) domain.BookshelfRepository {
+	if baseURL == "" {
+		log.Fatalf("baseURL is required")
+	}
 
-	baseURL := "https://www.googleapis.com/books/v1/users"
-	u, err := url.Parse(fmt.Sprintf("%s/%s/bookshelves/%d", baseURL, userId, shelfId))
+	return &BookshelfRepositoryImpl{
+		baseURL: baseURL,
+		apiKey:  os.Getenv("GOOGLE_BOOKS_API_KEY"),
+	}
+}
+
+func (br *BookshelfRepositoryImpl) FindByID(userId string, shelfId int) (*domain.Bookshelf, error) {
+	u, err := url.Parse(fmt.Sprintf("%s/users/%s/bookshelves/%d", br.baseURL, userId, shelfId))
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse URL: %w", err)
 	}
 
 	q := u.Query()
-	q.Set("key", apiKey)
+	q.Set("key", br.apiKey)
 	u.RawQuery = q.Encode()
 
 	resp, err := http.Get(u.String())
