@@ -28,6 +28,16 @@ func main() {
 	}
 	log.Println("all database migrations completed successfully")
 
+	s3Client := config.NewS3Client()
+	// FIXME: memo機能 and ログ機能
+	buckets, err := s3Client.ListBuckets(nil)
+	if err != nil {
+		log.Fatal("s3 client err: ", err)
+	}
+	for _, b := range buckets.Buckets {
+		log.Print("bucket name: ", *b.Name)
+	}
+
 	r := gin.Default()
 
 	config.SetupCORS(r)

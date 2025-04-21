@@ -34,3 +34,23 @@ git config core.hooksPath .githooks
 ```bash
 docker exec -it book-tracker-db mysql -u root -pRoot12345
 ```
+
+## AWS (localstack)
+
+- 実行権限を付与
+
+```bash
+chmod +x localstack/init-s3.sh
+```
+
+- S3バケット確認
+
+```bash
+docker-compose exec localstack bash
+
+# バケット一覧
+awslocal s3 ls
+
+# バケット内のファイル一覧
+awslocal s3 ls s3://local-book-tracker
+```
