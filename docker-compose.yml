@@ -50,8 +50,8 @@ services:
     volumes: # コンテナの外部に保管する
       - mysql-data-dev:/var/lib/mysql # データベースデータを永続化するボリューム
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
-      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_DATABASE: ${DB_NAME:-book-tracker}
     env_file:
       - .env
     ports:
@@ -72,6 +72,34 @@ services:
       - ./backend:/backend
       - ./.golangci.yml:/root/.golangci.yml
     command: ["golangci-lint", "run", "./..."]
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: localstack
+    ports:
+      - "4566:4566" # LocalStackのAPIエンドポイント
+      - "4510-4559:4510-4559" # LocalStackのサービスエンドポイント
+    networks:
+      - app-networks
+    environment:
+      SERVICES: "s3"
+      AWS_DEFAULT_REGION: ${AWS_REGION:-ap-northeast-1}
+      PERSISTENCE: 1
+    env_file:
+      - .env
+    restart: unless-stopped # コンテナが停止した場合に自動的に再起動
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+    volumes:
+      - ./localstack-data:/var/lib/localstack # LocalStackのデータを永続化するボリューム
+      - /var/run/docker.sock:/var/run/docker.sock # Dockerソケットをマウント
+      - ./localstack/init-s3.sh:/etc/localstack/init/ready.d/init-s3.sh
+      - ./localstack/init-data:/init-data # 初期データを格納するディレクトリ
 
 # ボリュームの定義
 volumes:
