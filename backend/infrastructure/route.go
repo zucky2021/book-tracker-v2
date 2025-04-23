@@ -13,6 +13,7 @@ func InitRouter(
 	bookPresenter *presenter.BookPresenter,
 	bookshelfController *controller.BookshelfController,
 	bookshelfPresenter *presenter.BookshelfPresenter,
+	memoController *controller.MemoController,
 ) {
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -52,4 +53,6 @@ func InitRouter(
 
 		bookshelfPresenter.PresentBookshelf(c, *bookshelf)
 	})
+
+	r.GET("/api/memo", memoController.GetMemo)
 }

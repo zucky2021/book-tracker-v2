@@ -54,7 +54,18 @@ func main() {
 	bookshelfController := controller.NewBookshelfController(getBookshelf)
 	bookshelfPresenter := presenter.NewBookshelfPresenter()
 
-	infrastructure.InitRouter(r, bookController, bookPresenter, bookshelfController, bookshelfPresenter)
+	memoRepo := repository.NewMemoRepository(dbConns)
+	memoUseCase := usecase.NewGetMemoUseCase(memoRepo)
+	memoPresenter := presenter.NewMemoPresenter()
+	memoController := controller.NewMemoController(memoUseCase, memoPresenter)
+
+	infrastructure.InitRouter(
+		r, bookController,
+		bookPresenter,
+		bookshelfController,
+		bookshelfPresenter,
+		memoController,
+	)
 
 	fmt.Println("Starting server on :8080")
 	if err := r.Run(":8080"); err != nil {
