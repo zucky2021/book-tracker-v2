@@ -19,7 +19,7 @@ func NewMemoController(
 	presenter *presenter.MemoPresenter,
 ) *MemoController {
 	return &MemoController{
-		getMemo: getMemo,
+		getMemo:   getMemo,
 		presenter: presenter,
 	}
 }
