@@ -10,16 +10,16 @@ import (
 )
 
 type BookController struct {
-	BookUseCase *usecase.BookUseCase
+	BookUseCase   *usecase.BookUseCase
 	BookPresenter *presenter.BookPresenter
 }
 
 func NewBookController(
 	bookUseCase *usecase.BookUseCase,
 	bookPresenter *presenter.BookPresenter,
-	) *BookController {
+) *BookController {
 	return &BookController{
-		BookUseCase: bookUseCase,
+		BookUseCase:   bookUseCase,
 		BookPresenter: bookPresenter,
 	}
 }
