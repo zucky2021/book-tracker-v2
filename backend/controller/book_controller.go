@@ -1,40 +1,53 @@
 package controller
 
 import (
-	"backend/domain"
+	"backend/presenter"
 	"backend/usecase"
+	"net/http"
 	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type BookController struct {
 	BookUseCase *usecase.BookUseCase
+	BookPresenter *presenter.BookPresenter
 }
 
-func NewBookController(bookUseCase *usecase.BookUseCase) *BookController {
+func NewBookController(
+	bookUseCase *usecase.BookUseCase,
+	bookPresenter *presenter.BookPresenter,
+	) *BookController {
 	return &BookController{
 		BookUseCase: bookUseCase,
+		BookPresenter: bookPresenter,
 	}
 }
 
-func (b *BookController) GetBooks(queryParams map[string]string) ([]domain.Book, error) {
-	// クエリパラメータを処理
-	userId := queryParams["userId"]
+func (bc *BookController) GetBooks(c *gin.Context) {
+	userId := c.Query("userId")
 
-	shelfId, err := strconv.Atoi(queryParams["shelfId"])
+	shelfId, err := strconv.Atoi(c.Query("shelfId"))
 	if err != nil {
-		return nil, err
+		bc.BookPresenter.OutputError(c, http.StatusInternalServerError, err)
+		return
 	}
 
-	startIndex, err := strconv.Atoi(queryParams["startIndex"])
+	startIndex, err := strconv.Atoi(c.Query("startIndex"))
 	if err != nil {
 		startIndex = 0 // デフォルト値
 	}
 
-	maxResults, err := strconv.Atoi(queryParams["maxResults"])
+	maxResults, err := strconv.Atoi(c.Query("maxResults"))
 	if err != nil {
 		maxResults = 40 // デフォルト値
 	}
 
-	// ユースケース層を呼び出し
-	return b.BookUseCase.Execute(userId, shelfId, startIndex, maxResults)
+	books, err := bc.BookUseCase.Execute(userId, shelfId, startIndex, maxResults)
+	if err != nil {
+		bc.BookPresenter.OutputError(c, http.StatusInternalServerError, err)
+		return
+	}
+
+	bc.BookPresenter.Output(c, books)
 }

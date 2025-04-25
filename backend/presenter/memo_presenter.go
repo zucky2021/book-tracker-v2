@@ -18,3 +18,9 @@ func (mp *MemoPresenter) Output(c *gin.Context, memo domain.Memo) {
 		"memo": memo,
 	})
 }
+
+func (mp *MemoPresenter) OutputError(c *gin.Context, status int, err error) {
+	c.JSON(status, gin.H{
+		"error": err.Error(),
+	})
+}

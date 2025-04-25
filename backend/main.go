@@ -48,13 +48,13 @@ func main() {
 
 	bookRepo := repository.NewBookRepository(googleBooksURL)
 	bookUsecase := usecase.NewBookUseCase(bookRepo)
-	bookController := controller.NewBookController(bookUsecase)
 	bookPresenter := presenter.NewBookPresenter()
+	bookController := controller.NewBookController(bookUsecase, bookPresenter)
 
 	bookshelfRepo := repository.NewBookshelfRepository(googleBooksURL)
 	getBookshelf := usecase.NewGetBookshelf(bookshelfRepo)
-	bookshelfController := controller.NewBookshelfController(getBookshelf)
 	bookshelfPresenter := presenter.NewBookshelfPresenter()
+	bookshelfController := controller.NewBookshelfController(getBookshelf, bookshelfPresenter)
 
 	memoRepo := repository.NewMemoRepository(dbConns)
 	memoUseCase := usecase.NewGetMemoUseCase(memoRepo)
@@ -62,10 +62,9 @@ func main() {
 	memoController := controller.NewMemoController(memoUseCase, memoPresenter)
 
 	infrastructure.InitRouter(
-		r, bookController,
-		bookPresenter,
+		r,
+		bookController,
 		bookshelfController,
-		bookshelfPresenter,
 		memoController,
 	)
 
