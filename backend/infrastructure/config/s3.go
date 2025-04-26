@@ -1,11 +1,11 @@
 package config
 
 import (
+	"backend/domain"
 	"context"
 	"errors"
 	"fmt"
 	"log"
-	"os"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
@@ -14,9 +14,9 @@ import (
 	"github.com/aws/smithy-go"
 )
 
-func NewS3Client() *s3.Client {
-	endpoint := os.Getenv("S3_ENDPOINT")
-	region := os.Getenv("AWS_REGION")
+func NewS3Client(env domain.EnvVarProvider) *s3.Client {
+	endpoint := env.GetS3Endpoint()
+	region := env.GetAWSRegion()
 
 	// 基本設定の読み込み
 	cfg, err := config.LoadDefaultConfig(

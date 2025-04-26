@@ -19,7 +19,9 @@ import (
 )
 
 func main() {
-	dbConns := config.GetDBConnections()
+	envVarProvider := infrastructure.NewEnvVarProvider()
+
+	dbConns := config.GetDBConnections(envVarProvider)
 	modelsToMigrate := []interface{}{
 		&domain.Memo{},
 	}
@@ -30,7 +32,7 @@ func main() {
 	}
 	log.Println("all database migrations completed successfully")
 
-	s3Client := config.NewS3Client()
+	s3Client := config.NewS3Client(envVarProvider)
 	// FIXME: memo機能 and ログ機能
 	buckets, err := s3Client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
 	if err != nil {
