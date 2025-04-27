@@ -23,6 +23,6 @@ func InitRouter(
 
 	r.GET("/api/bookshelf", bookshelfController.GetBookshelf)
 
-	r.GET("/api/memo", memoController.GetMemo)
+	r.GET("/api/memo/:memoId", memoController.GetMemo)
 	r.POST("/api/memo", memoController.CreateMemo)
 }

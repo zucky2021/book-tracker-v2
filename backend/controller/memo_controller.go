@@ -28,7 +28,7 @@ func NewMemoController(
 }
 
 func (mc *MemoController) GetMemo(c *gin.Context) {
-	memoId := c.Query("memoId")
+	memoId := c.Param("memoId")
 	userId := c.Query("userId")
 
 	intMemoId, err := strconv.ParseUint(memoId, 10, 64)
