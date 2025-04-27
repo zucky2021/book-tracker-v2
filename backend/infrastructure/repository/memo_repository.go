@@ -13,7 +13,7 @@ type MemoRepositoryImpl struct {
 	DB *config.DBConnections
 }
 
-func NewMemoRepository(db *config.DBConnections) *MemoRepositoryImpl {
+func NewMemoRepository(db *config.DBConnections) domain.MemoRepository {
 	return &MemoRepositoryImpl{DB: db}
 }
 
@@ -25,6 +25,13 @@ func (mr *MemoRepositoryImpl) FindByID(id uint, userId string) (domain.Memo, err
 			return domain.Memo{}, fmt.Errorf("memo not found: %w", err)
 		}
 		return domain.Memo{}, fmt.Errorf("error occurred while fetching memo: %w", err)
+	}
+	return memo, nil
+}
+
+func (mr *MemoRepositoryImpl) Create(memo domain.Memo) (domain.Memo, error) {
+	if err := mr.DB.Writer.Create(&memo).Error; err != nil {
+		return domain.Memo{}, fmt.Errorf("error occurred while creating memo: %w", err)
 	}
 	return memo, nil
 }

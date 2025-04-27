@@ -59,9 +59,10 @@ func main() {
 	bookshelfController := controller.NewBookshelfController(getBookshelf, bookshelfPresenter)
 
 	memoRepo := repository.NewMemoRepository(dbConns)
-	memoUseCase := usecase.NewGetMemoUseCase(memoRepo)
+	getMemoUseCase := usecase.NewGetMemoUseCase(memoRepo)
+	createMemoUseCase := usecase.NewCreateMemoUseCase(memoRepo)
 	memoPresenter := presenter.NewMemoPresenter()
-	memoController := controller.NewMemoController(memoUseCase, memoPresenter)
+	memoController := controller.NewMemoController(getMemoUseCase, memoPresenter, createMemoUseCase)
 
 	infrastructure.InitRouter(
 		r,
