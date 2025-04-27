@@ -10,9 +10,9 @@ import (
 )
 
 type MemoController struct {
-	getMemo   *usecase.GetMemoUseCase
+	getMemo    *usecase.GetMemoUseCase
 	createMemo *usecase.CreateMemoUseCase
-	presenter *presenter.MemoPresenter
+	presenter  *presenter.MemoPresenter
 }
 
 func NewMemoController(
@@ -21,8 +21,8 @@ func NewMemoController(
 	createMemo *usecase.CreateMemoUseCase,
 ) *MemoController {
 	return &MemoController{
-		getMemo:   getMemo,
-		presenter: presenter,
+		getMemo:    getMemo,
+		presenter:  presenter,
 		createMemo: createMemo,
 	}
 }
@@ -47,9 +47,9 @@ func (mc *MemoController) GetMemo(c *gin.Context) {
 
 // DTO for create request
 type CreateMemoRequest struct {
-	UserId string `json:"userId" binding:"required"`
-	BookId string `json:"bookId" binding:"required"`
-	Text string `json:"text" binding:"required,max=1000"`
+	UserId      string `json:"userId" binding:"required"`
+	BookId      string `json:"bookId" binding:"required"`
+	Text        string `json:"text" binding:"required,max=1000"`
 	ImgFileName string `json:"imgFileName"`
 }
 
