@@ -35,3 +35,17 @@ func (mr *MemoRepositoryImpl) Create(memo domain.Memo) (domain.Memo, error) {
 	}
 	return memo, nil
 }
+
+func (mr *MemoRepositoryImpl) Update(memo domain.Memo) (domain.Memo, error) {
+	if err := mr.DB.Writer.Save(&memo).Error; err != nil {
+		return domain.Memo{}, fmt.Errorf("error occurred while updating memo: %w", err)
+	}
+	return memo, nil
+}
+
+func (mr *MemoRepositoryImpl) Delete(id uint, userId string) error {
+	if err := mr.DB.Writer.Where("id = ? AND user_id = ?", id, userId).Delete(&domain.Memo{}).Error; err != nil {
+		return fmt.Errorf("error occurred while deleting memo: %w", err)
+	}
+	return nil
+}

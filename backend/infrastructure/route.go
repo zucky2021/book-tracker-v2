@@ -23,6 +23,8 @@ func InitRouter(
 
 	r.GET("/api/bookshelf", bookshelfController.GetBookshelf)
 
-	r.GET("/api/memo/:memoId", memoController.GetMemo)
 	r.POST("/api/memo", memoController.CreateMemo)
+	r.GET("/api/memo/:memoId", memoController.GetMemo)
+	r.PUT("/api/memo/:memoId", memoController.UpdateMemo)
+	r.DELETE("api/memo/:memoId", memoController.DeleteMemo)
 }

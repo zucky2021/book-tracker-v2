@@ -29,6 +29,6 @@ func (m Memo) GetImageUrl() string {
 type MemoRepository interface {
 	FindByID(id uint, userID string) (Memo, error)
 	Create(memo Memo) (Memo, error)
-	// Update(memo Memo) (Memo, error)
-	// Delete(id uint, userID string) error
+	Update(memo Memo) (Memo, error)
+	Delete(id uint, userID string) error
 }
