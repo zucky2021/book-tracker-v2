@@ -37,7 +37,10 @@ func (mr *MemoRepositoryImpl) Create(memo domain.Memo) (domain.Memo, error) {
 }
 
 func (mr *MemoRepositoryImpl) Update(memo domain.Memo) (domain.Memo, error) {
-	if err := mr.DB.Writer.Save(&memo).Error; err != nil {
+	if err := mr.DB.Writer.Model(&memo).Updates(domain.Memo{
+		Text:        memo.Text,
+		ImgFileName: memo.ImgFileName,
+	}).Error; err != nil {
 		return domain.Memo{}, fmt.Errorf("error occurred while updating memo: %w", err)
 	}
 	return memo, nil

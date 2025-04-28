@@ -4,7 +4,6 @@ import (
 	"backend/domain"
 	"backend/presenter"
 	"backend/usecase"
-	"log"
 	"net/http"
 	"strconv"
 
@@ -47,8 +46,6 @@ type CreateMemoRequest struct {
 func (mc *MemoController) CreateMemo(c *gin.Context) {
 	var req CreateMemoRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		log.Println("this?")
-
 		mc.presenter.OutputError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -81,6 +78,7 @@ func (mc *MemoController) GetMemo(c *gin.Context) {
 }
 
 type UpdateMemoRequest struct {
+	BookId      string `json:"bookId" binding:"required"`
 	Text        string `json:"text" binding:"required,max=1000"`
 	ImgFileName string `json:"imgFileName"`
 }
@@ -104,6 +102,7 @@ func (mc *MemoController) UpdateMemo(c *gin.Context) {
 	memo := domain.Memo{
 		ID:          uint(intMemoId),
 		UserID:      userId,
+		BookID:      req.BookId,
 		Text:        req.Text,
 		ImgFileName: req.ImgFileName,
 	}
