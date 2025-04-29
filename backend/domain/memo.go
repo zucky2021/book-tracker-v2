@@ -3,6 +3,8 @@ package domain
 import (
 	"fmt"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 const (
@@ -27,8 +29,8 @@ func (m Memo) GetImageUrl() string {
 }
 
 type MemoRepository interface {
-	FindByID(id uint, userID string) (Memo, error)
-	Create(memo Memo) (Memo, error)
-	Update(memo Memo) (Memo, error)
-	Delete(id uint, userID string) error
+	FindByID(db *gorm.DB, id uint, userID string) (Memo, error)
+	Create(db *gorm.DB, memo Memo) (Memo, error)
+	Update(db *gorm.DB, memo Memo) (Memo, error)
+	Delete(db *gorm.DB, id uint, userID string) error
 }

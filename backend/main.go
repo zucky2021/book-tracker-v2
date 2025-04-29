@@ -32,6 +32,8 @@ func main() {
 	}
 	log.Println("all database migrations completed successfully")
 
+	uow := infrastructure.NewGormUnitOfWork(dbConns.Writer, dbConns.Reader)
+
 	s3Client := config.NewS3Client(envVarProvider)
 	// FIXME: memo機能 and ログ機能
 	buckets, err := s3Client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
@@ -60,10 +62,10 @@ func main() {
 
 	memoRepo := repository.NewMemoRepository(dbConns)
 	memoPresenter := presenter.NewMemoPresenter()
-	createMemoUseCase := usecase.NewCreateMemoUseCase(memoRepo)
-	getMemoUseCase := usecase.NewGetMemoUseCase(memoRepo)
-	updateMemoUseCase := usecase.NewUpdateMemoUseCase(memoRepo)
-	deleteMemoUseCase := usecase.NewDeleteMemoUseCase(memoRepo)
+	createMemoUseCase := usecase.NewCreateMemoUseCase(uow, memoRepo)
+	getMemoUseCase := usecase.NewGetMemoUseCase(uow, memoRepo)
+	updateMemoUseCase := usecase.NewUpdateMemoUseCase(uow, memoRepo)
+	deleteMemoUseCase := usecase.NewDeleteMemoUseCase(uow, memoRepo)
 	memoController := controller.NewMemoController(
 		memoPresenter,
 		createMemoUseCase,
