@@ -21,7 +21,7 @@ func NewUpdateMemoUseCase(uow domain.UnitOfWork, repo domain.MemoRepository) *Up
 func (uc *UpdateMemoUseCase) Execute(req domain.Memo) (domain.Memo, error) {
 	var result domain.Memo
 
-	memo, findErr := uc.repo.FindByID(uc.uow.Reader(),req.ID, req.UserID)
+	memo, findErr := uc.repo.FindByID(uc.uow.Reader(), req.ID, req.UserID)
 	if findErr != nil {
 		return result, findErr
 	}

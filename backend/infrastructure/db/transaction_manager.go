@@ -49,4 +49,3 @@ func (tm *TransactionManager) CommitTransaction(tx *gorm.DB) error {
 func (tm *TransactionManager) RollbackTransaction(tx *gorm.DB) error {
 	return tx.Rollback().Error
 }
-
