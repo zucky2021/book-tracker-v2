@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"backend/domain"
 	"backend/presenter"
 	"backend/usecase"
 	"net/http"
@@ -36,8 +35,8 @@ func NewMemoController(
 
 // DTO for create request
 type CreateMemoRequest struct {
-	UserId      string `json:"userId" binding:"required"`
-	BookId      string `json:"bookId" binding:"required"`
+	UserID      string `json:"userId" binding:"required"`
+	BookID      string `json:"bookId" binding:"required"`
 	Text        string `json:"text" binding:"required,max=1000"`
 	ImgFileName string `json:"imgFileName"`
 }
@@ -51,7 +50,7 @@ func (mc *MemoController) CreateMemo(c *gin.Context) {
 	}
 
 	// TODO: 画像ファイルの保存処理を追加する
-	memo, err := mc.createMemo.Execute(req.UserId, req.BookId, req.Text, req.ImgFileName)
+	memo, err := mc.createMemo.Execute(req.UserID, req.BookID, req.Text, req.ImgFileName)
 	if err != nil {
 		mc.presenter.OutputError(c, http.StatusInternalServerError, err)
 		return
@@ -60,17 +59,17 @@ func (mc *MemoController) CreateMemo(c *gin.Context) {
 }
 
 func (mc *MemoController) GetMemo(c *gin.Context) {
-	memoId := c.Param("memoId")
-	userId := c.Param("userId")
+	memoID := c.Param("memoId")
+	userID := c.Param("userId")
 
-	intMemoId, err := strconv.ParseUint(memoId, 10, 64)
+	intMemoID, err := strconv.ParseUint(memoID, 10, 64)
 	if err != nil {
 		mc.presenter.OutputError(c, http.StatusBadRequest, err)
 		return
 	}
-	memo, err := mc.getMemo.Execute(uint(intMemoId), userId)
+	memo, err := mc.getMemo.Execute(uint(intMemoID), userID)
 	if err != nil {
-		mc.presenter.OutputError(c, http.StatusInsufficientStorage, err)
+		mc.presenter.OutputError(c, http.StatusInternalServerError, err)
 		return
 	}
 
@@ -78,16 +77,16 @@ func (mc *MemoController) GetMemo(c *gin.Context) {
 }
 
 type UpdateMemoRequest struct {
-	BookId      string `json:"bookId" binding:"required"`
+	UserID      string `json:"userId" binding:"required"`
+	BookID      string `json:"bookId" binding:"required"`
 	Text        string `json:"text" binding:"required,max=1000"`
 	ImgFileName string `json:"imgFileName"`
 }
 
 func (mc *MemoController) UpdateMemo(c *gin.Context) {
-	memoId := c.Param("memoId")
-	userId := c.Query("userId")
+	memoID := c.Param("memoId")
 
-	intMemoId, err := strconv.ParseUint(memoId, 10, 64)
+	intMemoID, err := strconv.ParseUint(memoID, 10, 64)
 	if err != nil {
 		mc.presenter.OutputError(c, http.StatusBadRequest, err)
 		return
@@ -99,14 +98,13 @@ func (mc *MemoController) UpdateMemo(c *gin.Context) {
 		return
 	}
 
-	memo := domain.Memo{
-		ID:          uint(intMemoId),
-		UserID:      userId,
-		BookID:      req.BookId,
-		Text:        req.Text,
-		ImgFileName: req.ImgFileName,
-	}
-	updatedMemo, err := mc.updateMemo.Execute(memo)
+	updatedMemo, err := mc.updateMemo.Execute(
+		uint(intMemoID),
+		req.UserID,
+		req.BookID,
+		req.Text,
+		req.ImgFileName,
+	)
 	if err != nil {
 		mc.presenter.OutputError(c, http.StatusInternalServerError, err)
 		return
@@ -115,18 +113,18 @@ func (mc *MemoController) UpdateMemo(c *gin.Context) {
 }
 
 func (mc *MemoController) DeleteMemo(c *gin.Context) {
-	memoId := c.Param("memoId")
-	userId := c.Query("userId")
+	memoID := c.Param("memoId")
+	userID := c.Query("userId")
 
-	intMemoId, err := strconv.ParseUint(memoId, 10, 64)
+	intMemoID, err := strconv.ParseUint(memoID, 10, 64)
 	if err != nil {
 		mc.presenter.OutputError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	err = mc.deleteMemo.Execute(uint(intMemoId), userId)
+	err = mc.deleteMemo.Execute(uint(intMemoID), userID)
 	if err != nil {
-		mc.presenter.OutputError(c, http.StatusInternalServerError, err)
+		mc.presenter.OutputError(c, http.StatusBadRequest, err)
 		return
 	}
 	c.JSON(http.StatusNoContent, nil)

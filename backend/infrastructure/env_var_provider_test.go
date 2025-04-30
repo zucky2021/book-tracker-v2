@@ -139,10 +139,20 @@ func TestEnvVarProvider(t *testing.T) {
 			},
 			want: "test_s3_bucket_name",
 		},
+		{
+			name:     "Google Books APIエンドポイントの取得",
+			envVar:   "GOOGLE_BOOKS_API_ENDPOINT",
+			envValue: "https://www.googleapis.com/books/v1",
+			methodToCall: func(evp domain.EnvVarProvider) string {
+				return evp.GetGoogleBooksEndpoint()
+			},
+			want: "https://www.googleapis.com/books/v1",
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
 			t.Setenv(tt.envVar, tt.envValue)
 			provider := NewEnvVarProvider()
 

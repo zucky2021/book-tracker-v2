@@ -15,4 +15,5 @@ type EnvVarProvider interface {
 	GetAWSAccessKeyID() string
 	GetAWSSecretAccessKey() string
 	GetS3BucketName() string
+	GetGoogleBooksEndpoint() string
 }

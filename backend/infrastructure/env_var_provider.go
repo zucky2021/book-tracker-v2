@@ -66,3 +66,7 @@ func (evp *EnvVarProviderImpl) GetAWSSecretAccessKey() string {
 func (evp *EnvVarProviderImpl) GetS3BucketName() string {
 	return os.Getenv("S3_BUCKET_NAME")
 }
+
+func (evp *EnvVarProviderImpl) GetGoogleBooksEndpoint() string {
+	return os.Getenv("GOOGLE_BOOKS_ENDPOINT")
+}

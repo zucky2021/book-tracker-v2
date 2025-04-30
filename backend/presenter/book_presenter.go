@@ -13,7 +13,7 @@ func NewBookPresenter() *BookPresenter {
 	return &BookPresenter{}
 }
 
-func (p *BookPresenter) Output(c *gin.Context, books []domain.Book) {
+func (bp *BookPresenter) Output(c *gin.Context, books []domain.Book) {
 	c.JSON(http.StatusOK, gin.H{
 		"books": books,
 	})

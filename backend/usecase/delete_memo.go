@@ -18,9 +18,9 @@ func NewDeleteMemoUseCase(uow domain.UnitOfWork, repo domain.MemoRepository) *De
 	}
 }
 
-func (uc *DeleteMemoUseCase) Execute(memoId uint, userId string) error {
+func (uc *DeleteMemoUseCase) Execute(memoID uint, userID string) error {
 	err := uc.uow.ExecuteInTransaction(func(tx *gorm.DB) error {
-		if err := uc.repo.Delete(tx, memoId, userId); err != nil {
+		if err := uc.repo.Delete(tx, memoID, userID); err != nil {
 			return err
 		}
 		return nil

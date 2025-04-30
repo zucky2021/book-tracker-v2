@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"backend/controller"
 	"backend/domain"
@@ -35,7 +34,7 @@ func main() {
 	uow := infrastructure.NewGormUnitOfWork(dbConns.Writer, dbConns.Reader)
 
 	s3Client := config.NewS3Client(envVarProvider)
-	// FIXME: memo機能 and ログ機能
+	// FIXME: Tmp memo機能 and ログ機能
 	buckets, err := s3Client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
 	if err != nil {
 		log.Fatal("s3 client err: ", err)
@@ -48,7 +47,7 @@ func main() {
 
 	config.SetupCORS(r)
 
-	googleBooksURL := os.Getenv("GOOGLE_BOOKS_ENDPOINT")
+	googleBooksURL := envVarProvider.GetGoogleBooksEndpoint()
 
 	bookRepo := repository.NewBookRepository(googleBooksURL)
 	bookUsecase := usecase.NewBookUseCase(bookRepo)

@@ -26,5 +26,5 @@ func InitRouter(
 	r.POST("/api/memo", memoController.CreateMemo)
 	r.GET("/api/memo/:memoId", memoController.GetMemo)
 	r.PUT("/api/memo/:memoId", memoController.UpdateMemo)
-	r.DELETE("api/memo/:memoId", memoController.DeleteMemo)
+	r.DELETE("/api/memo/:memoId", memoController.DeleteMemo)
 }

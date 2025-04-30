@@ -21,12 +21,12 @@ func NewCreateMemoUseCase(
 	}
 }
 
-func (uc *CreateMemoUseCase) Execute(userId, bookId, text, imgFileName string) (domain.Memo, error) {
+func (uc *CreateMemoUseCase) Execute(userID, bookID, text, imgFileName string) (domain.Memo, error) {
 	var result domain.Memo
 	err := uc.uow.ExecuteInTransaction(func(tx *gorm.DB) error {
 		memo := domain.Memo{
-			UserID:      userId,
-			BookID:      bookId,
+			UserID:      userID,
+			BookID:      bookID,
 			Text:        text,
 			ImgFileName: imgFileName,
 		}

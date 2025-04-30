@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"backend/domain"
+	"fmt"
 
 	"gorm.io/gorm"
 )
@@ -18,16 +19,26 @@ func NewUpdateMemoUseCase(uow domain.UnitOfWork, repo domain.MemoRepository) *Up
 	}
 }
 
-func (uc *UpdateMemoUseCase) Execute(req domain.Memo) (domain.Memo, error) {
+func (uc *UpdateMemoUseCase) Execute(
+	memoID uint,
+	userID string,
+	bookID string,
+	text string,
+	imgFileName string,
+) (domain.Memo, error) {
 	var result domain.Memo
 
-	memo, findErr := uc.repo.FindByID(uc.uow.Reader(), req.ID, req.UserID)
+	memo, findErr := uc.repo.FindByID(uc.uow.Reader(), memoID, userID)
 	if findErr != nil {
 		return result, findErr
 	}
 
-	memo.Text = req.Text
-	memo.ImgFileName = req.ImgFileName
+	if len(text) > domain.TextMaxLength {
+		return result, fmt.Errorf("memo text exceeds maximum length of %d characters", domain.TextMaxLength)
+	}
+
+	memo.Text = text
+	memo.ImgFileName = imgFileName
 
 	updateErr := uc.uow.ExecuteInTransaction(func(tx *gorm.DB) error {
 		updated, err := uc.repo.Update(tx, memo)
