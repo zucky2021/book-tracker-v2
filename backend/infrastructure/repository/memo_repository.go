@@ -2,7 +2,6 @@ package repository
 
 import (
 	"backend/domain"
-	"backend/infrastructure/config"
 	"errors"
 	"fmt"
 
@@ -11,7 +10,7 @@ import (
 
 type MemoRepositoryImpl struct{}
 
-func NewMemoRepository(db *config.DBConnections) domain.MemoRepository {
+func NewMemoRepository() domain.MemoRepository {
 	return &MemoRepositoryImpl{}
 }
 

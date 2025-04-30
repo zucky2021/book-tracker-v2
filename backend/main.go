@@ -59,7 +59,7 @@ func main() {
 	bookshelfPresenter := presenter.NewBookshelfPresenter()
 	bookshelfController := controller.NewBookshelfController(getBookshelf, bookshelfPresenter)
 
-	memoRepo := repository.NewMemoRepository(dbConns)
+	memoRepo := repository.NewMemoRepository()
 	memoPresenter := presenter.NewMemoPresenter()
 	createMemoUseCase := usecase.NewCreateMemoUseCase(uow, memoRepo)
 	getMemoUseCase := usecase.NewGetMemoUseCase(uow, memoRepo)
