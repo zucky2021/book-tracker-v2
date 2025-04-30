@@ -9,18 +9,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type MemoRepositoryImpl struct {
-	DB *config.DBConnections
-}
+type MemoRepositoryImpl struct{}
 
 func NewMemoRepository(db *config.DBConnections) domain.MemoRepository {
-	return &MemoRepositoryImpl{DB: db}
+	return &MemoRepositoryImpl{}
 }
 
 func (mr *MemoRepositoryImpl) FindByID(db *gorm.DB, id uint, userId string) (domain.Memo, error) {
 	var memo domain.Memo
 
-	if err := mr.DB.Reader.Where("id = ? AND user_id = ?", id, userId).First(&memo).Error; err != nil {
+	if err := db.Where("id = ? AND user_id = ?", id, userId).First(&memo).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return domain.Memo{}, fmt.Errorf("memo not found: %w", err)
 		}

@@ -22,7 +22,6 @@ func NewUpdateMemoUseCase(uow domain.UnitOfWork, repo domain.MemoRepository) *Up
 func (uc *UpdateMemoUseCase) Execute(
 	memoID uint,
 	userID string,
-	bookID string,
 	text string,
 	imgFileName string,
 ) (domain.Memo, error) {

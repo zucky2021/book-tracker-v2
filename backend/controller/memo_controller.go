@@ -76,12 +76,7 @@ func (mc *MemoController) GetMemo(c *gin.Context) {
 	mc.presenter.Output(c, memo)
 }
 
-type UpdateMemoRequest struct {
-	UserID      string `json:"userId" binding:"required"`
-	BookID      string `json:"bookId" binding:"required"`
-	Text        string `json:"text" binding:"required,max=1000"`
-	ImgFileName string `json:"imgFileName"`
-}
+type UpdateMemoRequest = CreateMemoRequest
 
 func (mc *MemoController) UpdateMemo(c *gin.Context) {
 	memoID := c.Param("memoId")
@@ -101,7 +96,6 @@ func (mc *MemoController) UpdateMemo(c *gin.Context) {
 	updatedMemo, err := mc.updateMemo.Execute(
 		uint(intMemoID),
 		req.UserID,
-		req.BookID,
 		req.Text,
 		req.ImgFileName,
 	)
@@ -127,5 +121,5 @@ func (mc *MemoController) DeleteMemo(c *gin.Context) {
 		mc.presenter.OutputError(c, http.StatusBadRequest, err)
 		return
 	}
-	c.JSON(http.StatusNoContent, nil)
+	mc.presenter.OutputError(c, http.StatusNoContent, nil)
 }
