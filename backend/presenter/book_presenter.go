@@ -13,13 +13,14 @@ func NewBookPresenter() *BookPresenter {
 	return &BookPresenter{}
 }
 
-func (p *BookPresenter) PresentBooks(c *gin.Context, books []domain.Book, err error) {
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-		return
-	}
-
+func (bp *BookPresenter) Output(c *gin.Context, books []domain.Book) {
 	c.JSON(http.StatusOK, gin.H{
 		"books": books,
+	})
+}
+
+func (bp *BookPresenter) OutputError(c *gin.Context, status int, err error) {
+	c.JSON(status, gin.H{
+		"error": err.Error(),
 	})
 }

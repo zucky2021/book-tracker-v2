@@ -1,9 +1,9 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
-	"os"
 
 	"backend/controller"
 	"backend/domain"
@@ -13,11 +13,14 @@ import (
 	"backend/presenter"
 	"backend/usecase"
 
+	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	dbConns := config.GetDBConnections()
+	envVarProvider := infrastructure.NewEnvVarProvider()
+
+	dbConns := config.GetDBConnections(envVarProvider)
 	modelsToMigrate := []interface{}{
 		&domain.Memo{},
 	}
@@ -28,33 +31,54 @@ func main() {
 	}
 	log.Println("all database migrations completed successfully")
 
-	s3Client := config.NewS3Client()
-	// FIXME: memo機能 and ログ機能
-	buckets, err := s3Client.ListBuckets(nil)
+	uow := infrastructure.NewGormUnitOfWork(dbConns.Writer, dbConns.Reader)
+
+	s3Client := config.NewS3Client(envVarProvider)
+	// FIXME: Tmp memo機能 and ログ機能
+	buckets, err := s3Client.ListBuckets(context.TODO(), &s3.ListBucketsInput{})
 	if err != nil {
 		log.Fatal("s3 client err: ", err)
 	}
 	for _, b := range buckets.Buckets {
-		log.Print("bucket name: ", *b.Name)
+		log.Print("Bucket name from main.go: ", *b.Name)
 	}
 
 	r := gin.Default()
 
 	config.SetupCORS(r)
 
-	googleBooksURL := os.Getenv("GOOGLE_BOOKS_ENDPOINT")
+	googleBooksURL := envVarProvider.GetGoogleBooksEndpoint()
 
 	bookRepo := repository.NewBookRepository(googleBooksURL)
 	bookUsecase := usecase.NewBookUseCase(bookRepo)
-	bookController := controller.NewBookController(bookUsecase)
 	bookPresenter := presenter.NewBookPresenter()
+	bookController := controller.NewBookController(bookUsecase, bookPresenter)
 
 	bookshelfRepo := repository.NewBookshelfRepository(googleBooksURL)
 	getBookshelf := usecase.NewGetBookshelf(bookshelfRepo)
-	bookshelfController := controller.NewBookshelfController(getBookshelf)
 	bookshelfPresenter := presenter.NewBookshelfPresenter()
+	bookshelfController := controller.NewBookshelfController(getBookshelf, bookshelfPresenter)
 
-	infrastructure.InitRouter(r, bookController, bookPresenter, bookshelfController, bookshelfPresenter)
+	memoRepo := repository.NewMemoRepository()
+	memoPresenter := presenter.NewMemoPresenter()
+	createMemoUseCase := usecase.NewCreateMemoUseCase(uow, memoRepo)
+	getMemoUseCase := usecase.NewGetMemoUseCase(uow, memoRepo)
+	updateMemoUseCase := usecase.NewUpdateMemoUseCase(uow, memoRepo)
+	deleteMemoUseCase := usecase.NewDeleteMemoUseCase(uow, memoRepo)
+	memoController := controller.NewMemoController(
+		memoPresenter,
+		createMemoUseCase,
+		getMemoUseCase,
+		updateMemoUseCase,
+		deleteMemoUseCase,
+	)
+
+	infrastructure.InitRouter(
+		r,
+		bookController,
+		bookshelfController,
+		memoController,
+	)
 
 	fmt.Println("Starting server on :8080")
 	if err := r.Run(":8080"); err != nil {

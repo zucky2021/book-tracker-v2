@@ -2,7 +2,6 @@ package infrastructure
 
 import (
 	"backend/controller"
-	"backend/presenter"
 
 	"github.com/gin-gonic/gin"
 )
@@ -10,9 +9,8 @@ import (
 func InitRouter(
 	r *gin.Engine,
 	bookController *controller.BookController,
-	bookPresenter *presenter.BookPresenter,
 	bookshelfController *controller.BookshelfController,
-	bookshelfPresenter *presenter.BookshelfPresenter,
+	memoController *controller.MemoController,
 ) {
 	r.GET("/health", func(c *gin.Context) {
 		c.JSON(200, gin.H{
@@ -21,35 +19,12 @@ func InitRouter(
 		})
 	})
 
-	r.GET("/api/books", func(c *gin.Context) {
-		queryParams := map[string]string{
-			"userId":     c.Query("userId"),
-			"shelfId":    c.Query("shelfId"),
-			"startIndex": c.DefaultQuery("startIndex", "0"),
-			"maxResults": c.DefaultQuery("maxResults", "40"),
-		}
+	r.GET("/api/books", bookController.GetBooks)
 
-		books, err := bookController.GetBooks(queryParams)
-		if err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
-			return
-		}
+	r.GET("/api/bookshelf", bookshelfController.GetBookshelf)
 
-		bookPresenter.PresentBooks(c, books, err)
-	})
-
-	r.GET("/api/bookshelf", func(c *gin.Context) {
-		queryParams := map[string]string{
-			"userId":  c.Query("userId"),
-			"shelfId": c.Query("shelfId"),
-		}
-
-		bookshelf, err := bookshelfController.GetBookshelf(queryParams)
-		if err != nil {
-			c.JSON(500, gin.H{"error": err.Error()})
-			return
-		}
-
-		bookshelfPresenter.PresentBookshelf(c, *bookshelf)
-	})
+	r.POST("/api/memo", memoController.CreateMemo)
+	r.GET("/api/memo/:memoId", memoController.GetMemo)
+	r.PUT("/api/memo/:memoId", memoController.UpdateMemo)
+	r.DELETE("/api/memo/:memoId", memoController.DeleteMemo)
 }

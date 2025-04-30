@@ -1,9 +1,9 @@
 package config
 
 import (
+	"backend/domain"
 	"fmt"
 	"log"
-	"os"
 	"sync"
 	"time"
 
@@ -37,25 +37,25 @@ type DBConnections struct {
 	Reader *gorm.DB
 }
 
-func GetDBConnections() *DBConnections {
+func GetDBConnections(env domain.EnvVarProvider) *DBConnections {
 	once.Do(func() {
 		writer, err := connectDB(&DBConfig{
-			dbHost:     os.Getenv("DB_HOST"),
-			dbPort:     os.Getenv("DB_PORT"),
-			dbUser:     os.Getenv("DB_USER"),
-			dbPassword: os.Getenv("DB_PASSWORD"),
-			dbName:     os.Getenv("DB_NAME"),
+			dbHost:     env.GetDBHost(),
+			dbPort:     env.GetDBPort(),
+			dbUser:     env.GetDBUser(),
+			dbPassword: env.GetDBPassword(),
+			dbName:     env.GetDBName(),
 		})
 		if err != nil {
 			log.Fatalf("Failed to connect to writer DB: %v", err)
 		}
 
 		reader, err := connectDB(&DBConfig{
-			dbHost:     os.Getenv("DB_READER_HOST"),
-			dbPort:     os.Getenv("DB_READER_PORT"),
-			dbUser:     os.Getenv("DB_READER_USER"),
-			dbPassword: os.Getenv("DB_READER_PASSWORD"),
-			dbName:     os.Getenv("DB_NAME"),
+			dbHost:     env.GetDBReaderHost(),
+			dbPort:     env.GetDBReaderPort(),
+			dbUser:     env.GetDBReaderUser(),
+			dbPassword: env.GetDBReaderPassword(),
+			dbName:     env.GetDBName(),
 		})
 		if err != nil {
 			log.Fatalf("Failed to connect to reader DB: %v", err)
