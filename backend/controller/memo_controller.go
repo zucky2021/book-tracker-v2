@@ -1,8 +1,10 @@
 package controller
 
 import (
+	"backend/domain"
 	"backend/presenter"
 	"backend/usecase"
+	"io"
 	"net/http"
 	"strconv"
 
@@ -35,22 +37,30 @@ func NewMemoController(
 
 // DTO for create request
 type CreateMemoRequest struct {
-	UserID      string `json:"userId" binding:"required"`
-	BookID      string `json:"bookId" binding:"required"`
-	Text        string `json:"text" binding:"required,max=1000"`
-	ImgFileName string `json:"imgFileName"`
+	UserID string `form:"userId" binding:"required"`
+	BookID string `form:"bookId" binding:"required"`
+	Text   string `form:"text" binding:"required,max=1000"`
 }
 
 // メモを登録
 func (mc *MemoController) CreateMemo(c *gin.Context) {
 	var req CreateMemoRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		mc.presenter.OutputError(c, http.StatusBadRequest, err)
 		return
 	}
 
-	// TODO: 画像ファイルの保存処理を追加する
-	memo, err := mc.createMemo.Execute(req.UserID, req.BookID, req.Text, req.ImgFileName)
+	file, fileHeader, err := c.Request.FormFile("imgFile")
+	var imgData []byte
+	if err == nil && file != nil {
+		if fileHeader.Size > domain.ImgMaxSize {
+			mc.presenter.OutputError(c, http.StatusBadRequest, err)
+			return
+		}
+		imgData, _ = io.ReadAll(file)
+	}
+
+	memo, err := mc.createMemo.Execute(req.UserID, req.BookID, req.Text, imgData, fileHeader)
 	if err != nil {
 		mc.presenter.OutputError(c, http.StatusInternalServerError, err)
 		return
@@ -93,11 +103,22 @@ func (mc *MemoController) UpdateMemo(c *gin.Context) {
 		return
 	}
 
+	file, fileHeader, err := c.Request.FormFile("imgFile")
+	var imgData []byte
+	if err == nil && file != nil {
+		if fileHeader.Size > domain.ImgMaxSize {
+			mc.presenter.OutputError(c, http.StatusBadRequest, err)
+			return
+		}
+		imgData, _ = io.ReadAll(file)
+	}
+
 	updatedMemo, err := mc.updateMemo.Execute(
 		uint(intMemoID),
 		req.UserID,
 		req.Text,
-		req.ImgFileName,
+		imgData,
+		fileHeader,
 	)
 	if err != nil {
 		mc.presenter.OutputError(c, http.StatusInternalServerError, err)

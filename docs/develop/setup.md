@@ -46,7 +46,8 @@ chmod +x localstack/init-s3.sh
 - S3バケット確認
 
 ```bash
-docker-compose exec localstack bash
+# インタラクティブモードでコンテナに接続
+docker-compose exec -it localstack bash
 
 # バケット一覧
 awslocal s3 ls

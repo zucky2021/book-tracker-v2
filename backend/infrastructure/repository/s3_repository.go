@@ -9,20 +9,21 @@ import (
 )
 
 type S3RepositoryImpl struct {
-	Client     *s3.Client
-	BucketName string
+	Client *s3.Client
+	env    domain.EnvVarProvider
 }
 
-func NewS3Repository(client *s3.Client, bucketName string) domain.Storage {
+func NewS3Repository(client *s3.Client, env domain.EnvVarProvider) domain.StorageRepository {
 	return &S3RepositoryImpl{
-		Client:     client,
-		BucketName: bucketName,
+		Client: client,
+		env:    env,
 	}
 }
 
-func (s *S3RepositoryImpl) Upload(ctx context.Context, key string, data []byte) error {
-	_, err := s.Client.PutObject(ctx, &s3.PutObjectInput{
-		Bucket: &s.BucketName,
+func (repo *S3RepositoryImpl) Upload(ctx context.Context, key string, data []byte) error {
+	bucketName := repo.env.GetS3BucketName()
+	_, err := repo.Client.PutObject(ctx, &s3.PutObjectInput{
+		Bucket: &bucketName,
 		Key:    &key,
 		Body:   bytes.NewReader(data),
 	})

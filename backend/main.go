@@ -60,10 +60,11 @@ func main() {
 	bookshelfController := controller.NewBookshelfController(getBookshelf, bookshelfPresenter)
 
 	memoRepo := repository.NewMemoRepository()
+	storageRepo := repository.NewS3Repository(s3Client, envVarProvider)
 	memoPresenter := presenter.NewMemoPresenter()
-	createMemoUseCase := usecase.NewCreateMemoUseCase(uow, memoRepo)
+	createMemoUseCase := usecase.NewCreateMemoUseCase(uow, memoRepo, storageRepo)
 	getMemoUseCase := usecase.NewGetMemoUseCase(uow, memoRepo)
-	updateMemoUseCase := usecase.NewUpdateMemoUseCase(uow, memoRepo)
+	updateMemoUseCase := usecase.NewUpdateMemoUseCase(uow, memoRepo, storageRepo)
 	deleteMemoUseCase := usecase.NewDeleteMemoUseCase(uow, memoRepo)
 	memoController := controller.NewMemoController(
 		memoPresenter,
