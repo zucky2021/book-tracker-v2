@@ -29,6 +29,7 @@ func NewCreateMemoUseCase(
 }
 
 func (uc *CreateMemoUseCase) Execute(
+	ctx context.Context,
 	userID string,
 	bookID string,
 	text string,
@@ -57,7 +58,7 @@ func (uc *CreateMemoUseCase) Execute(
 
 		if imgFileName != "" && len(imgData) > 0 {
 			key := fmt.Sprintf("%s/%s", userID, imgFileName)
-			err = uc.storageRepo.Upload(context.TODO(), key, imgData)
+			err = uc.storageRepo.Upload(ctx, key, imgData)
 			if err != nil {
 				return fmt.Errorf("failed to upload image to S3: %w", err)
 			}

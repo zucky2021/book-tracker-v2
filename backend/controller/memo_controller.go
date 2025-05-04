@@ -4,6 +4,7 @@ import (
 	"backend/domain"
 	"backend/presenter"
 	"backend/usecase"
+	"fmt"
 	"io"
 	"net/http"
 	"strconv"
@@ -51,16 +52,26 @@ func (mc *MemoController) CreateMemo(c *gin.Context) {
 	}
 
 	file, fileHeader, err := c.Request.FormFile("imgFile")
+	if fileHeader == nil {
+		mc.presenter.OutputError(c, http.StatusBadRequest, fmt.Errorf("image header is nil"))
+	}
 	var imgData []byte
 	if err == nil && file != nil {
 		if fileHeader.Size > domain.ImgMaxSize {
-			mc.presenter.OutputError(c, http.StatusBadRequest, err)
+			mc.presenter.OutputError(c, http.StatusBadRequest, fmt.Errorf("画像は%dMB以内にしてください", domain.ImgMaxSize/1024/1024))
 			return
 		}
 		imgData, _ = io.ReadAll(file)
 	}
 
-	memo, err := mc.createMemo.Execute(req.UserID, req.BookID, req.Text, imgData, fileHeader)
+	memo, err := mc.createMemo.Execute(
+		c.Request.Context(),
+		req.UserID,
+		req.BookID,
+		req.Text,
+		imgData,
+		fileHeader,
+	)
 	if err != nil {
 		mc.presenter.OutputError(c, http.StatusInternalServerError, err)
 		return
@@ -98,7 +109,7 @@ func (mc *MemoController) UpdateMemo(c *gin.Context) {
 	}
 
 	var req UpdateMemoRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
+	if err := c.ShouldBind(&req); err != nil {
 		mc.presenter.OutputError(c, http.StatusBadRequest, err)
 		return
 	}
@@ -111,9 +122,15 @@ func (mc *MemoController) UpdateMemo(c *gin.Context) {
 			return
 		}
 		imgData, _ = io.ReadAll(file)
+		defer func() {
+			if err := file.Close(); err != nil {
+				mc.presenter.OutputError(c, http.StatusInternalServerError, err)
+			}
+		}()
 	}
 
 	updatedMemo, err := mc.updateMemo.Execute(
+		c.Request.Context(),
 		uint(intMemoID),
 		req.UserID,
 		req.Text,

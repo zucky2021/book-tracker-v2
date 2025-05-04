@@ -5,6 +5,7 @@ import (
 	"context"
 	"fmt"
 	"mime/multipart"
+	"path/filepath"
 
 	"gorm.io/gorm"
 )
@@ -21,12 +22,14 @@ func NewUpdateMemoUseCase(
 	storageRepo domain.StorageRepository,
 ) *UpdateMemoUseCase {
 	return &UpdateMemoUseCase{
-		uow:  uow,
-		repo: repo,
+		uow:         uow,
+		repo:        repo,
+		storageRepo: storageRepo,
 	}
 }
 
 func (uc *UpdateMemoUseCase) Execute(
+	ctx context.Context,
 	memoID uint,
 	userID string,
 	text string,
@@ -46,7 +49,7 @@ func (uc *UpdateMemoUseCase) Execute(
 
 	var imgFileName string
 	if len(imgData) > 0 {
-		ext := fileHeader.Filename[len(fileHeader.Filename)-4:]
+		ext := filepath.Ext(fileHeader.Filename)
 		imgFileName = domain.GenerateImgFileName(ext)
 		memo.ImgFileName = imgFileName
 	}
