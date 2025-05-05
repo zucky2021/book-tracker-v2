@@ -6,6 +6,7 @@ import (
 	"backend/usecase"
 	"fmt"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"strconv"
 
@@ -51,17 +52,10 @@ func (mc *MemoController) CreateMemo(c *gin.Context) {
 		return
 	}
 
-	file, fileHeader, err := c.Request.FormFile("imgFile")
-	if fileHeader == nil {
-		mc.presenter.OutputError(c, http.StatusBadRequest, fmt.Errorf("image header is nil"))
-	}
-	var imgData []byte
-	if err == nil && file != nil {
-		if fileHeader.Size > domain.ImgMaxSize {
-			mc.presenter.OutputError(c, http.StatusBadRequest, fmt.Errorf("画像は%dMB以内にしてください", domain.ImgMaxSize/1024/1024))
-			return
-		}
-		imgData, _ = io.ReadAll(file)
+	imgData, fileHeader, err := validateImg(c)
+	if err != nil {
+		mc.presenter.OutputError(c, http.StatusBadRequest, err)
+		return
 	}
 
 	memo, err := mc.createMemo.Execute(
@@ -114,19 +108,10 @@ func (mc *MemoController) UpdateMemo(c *gin.Context) {
 		return
 	}
 
-	file, fileHeader, err := c.Request.FormFile("imgFile")
-	var imgData []byte
-	if err == nil && file != nil {
-		if fileHeader.Size > domain.ImgMaxSize {
-			mc.presenter.OutputError(c, http.StatusBadRequest, err)
-			return
-		}
-		imgData, _ = io.ReadAll(file)
-		defer func() {
-			if err := file.Close(); err != nil {
-				mc.presenter.OutputError(c, http.StatusInternalServerError, err)
-			}
-		}()
+	imgData, fileHeader, err := validateImg(c)
+	if err != nil {
+		mc.presenter.OutputError(c, http.StatusBadRequest, err)
+		return
 	}
 
 	updatedMemo, err := mc.updateMemo.Execute(
@@ -160,4 +145,25 @@ func (mc *MemoController) DeleteMemo(c *gin.Context) {
 		return
 	}
 	mc.presenter.OutputError(c, http.StatusNoContent, nil)
+}
+
+func validateImg(c *gin.Context) ([]byte, *multipart.FileHeader, error) {
+	file, fileHeader, err := c.Request.FormFile("imgFile")
+	if err != nil || file == nil {
+		return nil, nil, nil
+	}
+	if fileHeader.Size > domain.ImgMaxSize {
+		return nil, nil, fmt.Errorf("画像は%dMB以内にしてください", domain.ImgMaxSize/1024/1024)
+	}
+	imgData, readErr := io.ReadAll(file)
+	if readErr != nil {
+		return nil, nil, readErr
+	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			_ = c.Error(err)
+		}
+	}()
+
+	return imgData, fileHeader, nil
 }
