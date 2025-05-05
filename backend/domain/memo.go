@@ -9,6 +9,7 @@ import (
 
 const (
 	TextMaxLength = 1000
+	ImgMaxSize    = 5 * 1024 * 1024 // 5MB
 )
 
 type Memo struct {
@@ -19,6 +20,10 @@ type Memo struct {
 	ImgFileName string `gorm:"size:255"`
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+}
+
+func GenerateImgFileName(ext string) string {
+	return fmt.Sprintf("%s%d%s", time.Now().Format("20060102150405"), time.Now().Nanosecond(), ext)
 }
 
 func (m Memo) GetImageUrl() string {
