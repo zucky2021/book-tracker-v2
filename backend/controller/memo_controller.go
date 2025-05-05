@@ -150,6 +150,9 @@ func (mc *MemoController) DeleteMemo(c *gin.Context) {
 func validateImg(c *gin.Context) ([]byte, *multipart.FileHeader, error) {
 	file, fileHeader, err := c.Request.FormFile("imgFile")
 	if err != nil || file == nil {
+		if err != nil {
+			return nil, nil, fmt.Errorf("画像の取得に失敗しました: %w", err)
+		}
 		return nil, nil, nil
 	}
 	if fileHeader.Size > domain.ImgMaxSize {
