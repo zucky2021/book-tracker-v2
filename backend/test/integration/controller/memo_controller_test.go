@@ -56,16 +56,26 @@ func TestCreateMemo(t *testing.T) {
 
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-	_ = writer.WriteField("userId", "test_user_id")
-	_ = writer.WriteField("bookId", "test_book_id")
-	_ = writer.WriteField("text", "テストメモ")
+	_ = writer.WriteField("userId", "testUserId1")
+	_ = writer.WriteField("bookId", "testBookId1")
+	_ = writer.WriteField("text", "Dummy text.")
 
 	// テスト用画像ファイルを添付
 	imgPath := filepath.Join("testdata", "test.jpg")
-	imgFile, _ := os.Open(imgPath)
+	imgFile, err := os.Open(imgPath)
+	if err != nil {
+		t.Fatalf("テスト用画像ファイルのオープンに失敗: %v", err)
+	}
 	defer imgFile.Close()
-	part, _ := writer.CreateFormFile("imgFile", filepath.Base(imgPath))
-	_, _ = io.Copy(part, imgFile)
+
+	part, err := writer.CreateFormFile("imgFile", filepath.Base(imgPath))
+	if err != nil {
+		t.Fatalf("フォームファイルの作成に失敗: %v", err)
+	}
+	_, err = io.Copy(part, imgFile)
+	if err != nil {
+		t.Fatalf("ファイルのコピーに失敗: %v", err)
+	}
 	writer.Close()
 
 	req := httptest.NewRequest(http.MethodPost, "/api/memo", body)
@@ -75,7 +85,8 @@ func TestCreateMemo(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, w.Body.String(), "user1")
-	assert.Equal(t, w.Body.String(), "book1")
-	assert.Equal(t, w.Body.String(), "テストメモ")
+	responseBody := w.Body.String()
+	assert.Equal(t, responseBody, "testUserId1")
+	assert.Equal(t, responseBody, "testBookId1")
+	assert.Equal(t, responseBody, "Dummy text.")
 }

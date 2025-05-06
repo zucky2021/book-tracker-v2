@@ -5,7 +5,7 @@ CREATE TABLE
     book_id VARCHAR(255) NOT NULL COMMENT 'Google books book id',
     text TEXT NOT NULL,
     img_file_name VARCHAR(255),
-    created_at DATETIME,
-    updated_at DATETIME,
+    created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     UNIQUE KEY idx_user_book (user_id, book_id)
   ) DEFAULT CHARSET = utf8mb4 COLLATE = utf8mb4_unicode_ci COMMENT 'Memos table';
