@@ -32,9 +32,15 @@
   "go.formatTool": "goimports", // フォーマットツールを指定
   "go.lintTool": "golangci-lint", // Lintツールを指定
   "gopls": {
+    "build.buildFlags": [
+      "-tags=integration"
+    ],
     "ui.semanticTokens": true, // セマンティックトークンを有効化
     "staticcheck": true, // 静的解析ツール staticcheck を有効化
     "hoverKind": "FullDocumentation", // ホバー時に完全なドキュメント表示
   },
-  "postman.settings.dotenv-detection-notification-visibility": false
+  "postman.settings.dotenv-detection-notification-visibility": false,
+  "[sql]": {
+    "editor.defaultFormatter": "inferrinizzard.prettier-sql-vscode"
+  }
 }
