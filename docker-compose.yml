@@ -49,6 +49,7 @@ services:
       - app-networks
     volumes: # コンテナの外部に保管する
       - mysql-data-dev:/var/lib/mysql # データベースデータを永続化するボリューム
+      - ./mysql/init:/docker-entrypoint-initdb.d # 初期化スクリプトをマウント
     environment:
       MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
       MYSQL_DATABASE: ${DB_NAME:-book-tracker}
