@@ -58,9 +58,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set execute permission for init-s3.sh
-        run: chmod +x ./localstack/init-s3.sh
-
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
