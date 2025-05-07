@@ -31,13 +31,12 @@ jobs:
           --health-retries 5
 
       localstack:
-        image: localstack/localstack
+        image: localstack/localstack:latest
         ports:
           - 4566:4566
         env:
-          SERVICES: s3,sqs,dynamodb
-          DEFAULT_REGION: ap-northeast-1
-          LS_LOG: trace
+          SERVICES: s3
+          AWS_DEFAULT_REGION: ap-northeast-1
         volumes:
           - ./localstack/init-s3.sh:/etc/localstack/init/ready.d/init-s3.sh
         options: >-
@@ -68,6 +67,6 @@ jobs:
 
       - name: Run integration tests
         run: |
-          go test -v ./backend/test/integration/controller/memo_controller_test.go \
+          go test -v ./backend/test/integration/... \
             -tags=integration \
             -coverprofile=coverage.out
