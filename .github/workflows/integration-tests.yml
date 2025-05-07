@@ -1,4 +1,3 @@
-# .github/workflows/integration-tests.yml
 name: Integration Tests
 
 on:
@@ -40,8 +39,10 @@ jobs:
         volumes:
           - ./localstack/init-s3.sh:/etc/localstack/init/ready.d/init-s3.sh
         options: >-
-          --health-cmd "localstack wait -t 30"
+          --health-cmd "curl -f http://localhost:4566/_localstack/health || exit 1"
           --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
     env:
       AWS_ACCESS_KEY_ID: test
