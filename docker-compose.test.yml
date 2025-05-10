@@ -16,7 +16,7 @@ services:
       - ./backend:/app
     working_dir: /app
     # 起動時に結合テストを実行
-    command: go test -v ./test/integration/... -tags=integration -coverprofile=coverage.out
+    command: go test -v ./test/integration/... -tags=integration
 
   db:
     image: mysql:8.0
