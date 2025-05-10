@@ -1,5 +1,5 @@
 # ベースイメージの指定
-FROM golang:1.24-alpine AS build
+FROM golang:1.24-alpine AS builder
 
 # 非rootユーザーの作成
 RUN addgroup -g 1000 appuser && \
@@ -33,8 +33,9 @@ RUN mkdir -p /home/appuser/.cache/go-build && chown -R appuser:appuser /home/app
 # 非ルートユーザーに切り替え
 USER appuser
 
+FROM builder AS local
 # airを使ってアプリケーションを実行
 CMD ["air"]
 
-# TODO:適宜のビルドを追加 本番用のビルドステージ
-FROM build AS production
+FROM builder AS test
+CMD ["tail", "-f", "/dev/null"]
