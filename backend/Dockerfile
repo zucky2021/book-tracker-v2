@@ -37,5 +37,5 @@ FROM builder AS local
 # airを使ってアプリケーションを実行
 CMD ["air"]
 
-FROM build AS test
+FROM builder AS test
 CMD ["tail", "-f", "/dev/null"]
