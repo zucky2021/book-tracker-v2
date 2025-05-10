@@ -10,7 +10,9 @@ import (
 	"backend/presenter"
 	"backend/usecase"
 	"bytes"
+	"encoding/json"
 	"io"
+	"log"
 	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
@@ -52,6 +54,8 @@ func setupRouter() *gin.Engine {
 }
 
 func TestCreateMemo(t *testing.T) {
+	log.Printf("Starting integration test for MemoController")
+
 	router := setupRouter()
 
 	body := &bytes.Buffer{}
@@ -84,9 +88,28 @@ func TestCreateMemo(t *testing.T) {
 
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusOK, w.Code)
+	var resp MemoResponse
 	responseBody := w.Body.String()
-	assert.Equal(t, responseBody, "testUserId1")
-	assert.Equal(t, responseBody, "testBookId1")
-	assert.Equal(t, responseBody, "Dummy text.")
+	if err := json.Unmarshal([]byte(responseBody), &resp); err != nil {
+		t.Fatalf("レスポンスのJSONパースに失敗: %v", err)
+	}
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Equal(t, resp.Memo.UserID, "testUserId1")
+	assert.Equal(t, resp.Memo.BookID, "testBookId1")
+	assert.Equal(t, resp.Memo.Text, "Dummy text.")
+
+	log.Printf("Finished integration test for MemoController")
+}
+
+type MemoResponse struct {
+	Memo struct {
+		ID          int    `json:"ID"`
+		UserID      string `json:"UserID"`
+		BookID      string `json:"BookID"`
+		Text        string `json:"Text"`
+		ImgFileName string `json:"ImgFileName"`
+		CreatedAt   string `json:"CreatedAt"`
+		UpdatedAt   string `json:"UpdatedAt"`
+	} `json:"memo"`
 }

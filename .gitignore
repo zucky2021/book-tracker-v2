@@ -1,3 +1,4 @@
 .env
 
-localstack-data/
+# テストカバレッジレポート
+*/coverage.out

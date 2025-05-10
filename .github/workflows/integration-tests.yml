@@ -2,8 +2,12 @@ name: Integration Tests
 
 on:
   pull_request:
-    paths:
-      - 'backend/test/integration/controller/memo_controller_test.go'
+    branches:
+      - 'main'
+      - 'develop'
+      - 'release/**'
+      - 'feature/**'
+      - 'hotfix/**'
   push:
     branches:
       - 'feature/**'
@@ -13,46 +17,6 @@ on:
 jobs:
   integration-test:
     runs-on: ubuntu-latest
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: test_db
-        ports:
-          - 3306:3306
-        volumes:
-          - ./mysql/init:/docker-entrypoint-initdb.d
-        options: >-
-          --health-cmd "mysqladmin ping -p$$MYSQL_ROOT_PASSWORD"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-      localstack:
-        image: localstack/localstack:latest
-        ports:
-          - 4566:4566
-        env:
-          SERVICES: s3
-          AWS_DEFAULT_REGION: ap-northeast-1
-        volumes:
-          - ./localstack/init-s3.sh:/etc/localstack/init/ready.d/init-s3.sh
-        options: >-
-          --health-cmd "curl -f http://localhost:4566/_localstack/health || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
-    env:
-      AWS_ACCESS_KEY_ID: test
-      AWS_SECRET_ACCESS_KEY: test
-      AWS_ENDPOINT_URL: http://localhost:4566
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_USER: root
-      DB_PASSWORD: root
-      DB_NAME: test_db
 
     steps:
       - name: Checkout code
