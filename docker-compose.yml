@@ -28,6 +28,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: local # ビルドステージを指定
     networks:
       - app-networks
     volumes:
