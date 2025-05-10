@@ -22,16 +22,13 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: 1.24
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Initialize submodules
-        run: git submodule update --init
-
-      - name: Run integration tests
+      - name: Build and run integration tests
         run: |
-          go test -v ./backend/test/integration/... \
-            -tags=integration \
-            -coverprofile=coverage.out
+          docker-compose -f docker-compose.test.yml up --abort-on-container-exit --exit-code-from backend-test
+
+      - name: Clean up
+        if: always()
+        run: docker-compose -f docker-compose.test.yml down -v --remove-orphans
