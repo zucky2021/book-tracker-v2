@@ -60,9 +60,15 @@ func TestCreateMemo(t *testing.T) {
 
 	body := &bytes.Buffer{}
 	writer := multipart.NewWriter(body)
-	_ = writer.WriteField("userId", "testUserId1")
-	_ = writer.WriteField("bookId", "testBookId1")
-	_ = writer.WriteField("text", "Dummy text.")
+	if err := writer.WriteField("userId", "testUserId1"); err != nil {
+		t.Fatalf("failed to write userId field: %v", err)
+	}
+	if err := writer.WriteField("bookId", "testBookId1"); err != nil {
+		t.Fatalf("failed to write bookId field: %v", err)
+	}
+	if err := writer.WriteField("text", "Dummy text."); err != nil {
+		t.Fatalf("failed to write text field: %v", err)
+	}
 
 	// テスト用画像ファイルを添付
 	imgPath := filepath.Join("testdata", "test.jpg")
@@ -91,25 +97,27 @@ func TestCreateMemo(t *testing.T) {
 	var resp MemoResponse
 	responseBody := w.Body.String()
 	if err := json.Unmarshal([]byte(responseBody), &resp); err != nil {
-		t.Fatalf("レスポンスのJSONパースに失敗: %v", err)
+		t.Fatalf("レスポンスのJSONパースに失敗: %v\nレスポンス本文: %s", err, responseBody)
 	}
 
 	assert.Equal(t, http.StatusOK, w.Code)
-	assert.Equal(t, resp.Memo.UserID, "testUserId1")
-	assert.Equal(t, resp.Memo.BookID, "testBookId1")
-	assert.Equal(t, resp.Memo.Text, "Dummy text.")
+	assert.Equal(t, "testUserId1", resp.Memo.UserID)
+	assert.Equal(t, "testBookId1", resp.Memo.BookID)
+	assert.Equal(t, "Dummy text.", resp.Memo.Text)
 
 	log.Printf("Finished integration test for MemoController")
 }
 
+type MemoDetail struct {
+	ID          int    `json:"id"`
+	UserID      string `json:"userId"`
+	BookID      string `json:"bookId"`
+	Text        string `json:"text"`
+	ImgFileName string `json:"imgFileName"`
+	CreatedAt   string `json:"createdAt"`
+	UpdatedAt   string `json:"updatedAt"`
+}
+
 type MemoResponse struct {
-	Memo struct {
-		ID          int    `json:"ID"`
-		UserID      string `json:"UserID"`
-		BookID      string `json:"BookID"`
-		Text        string `json:"Text"`
-		ImgFileName string `json:"ImgFileName"`
-		CreatedAt   string `json:"CreatedAt"`
-		UpdatedAt   string `json:"UpdatedAt"`
-	} `json:"memo"`
+	Memo MemoDetail `json:"memo"`
 }

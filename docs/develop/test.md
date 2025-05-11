@@ -13,8 +13,8 @@ docker-compose -f docker-compose.test.yml up
 ```
 
 - 解説
-  - [docker-compose.test.yml](../../docker-compose.test.yml)を使用して起動
-  - ***command***にて起動時に結合テスト実行
+  - [docker-compose.test.yml](../../docker-compose.test.yml)を使用して起動。
+  - ***command***にて起動時に結合テスト実行。
 
 #### 手動実行
 

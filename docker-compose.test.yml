@@ -25,12 +25,12 @@ services:
       MYSQL_ROOT_PASSWORD: Root12345
       MYSQL_DATABASE: test_book_tracker
     ports:
-      - "13306:3306" # テスト用にポートをずらす
+      - "13306:3306" # テスト用にポートをずらす(内部ポートはそのまま)
     volumes:
       - mysql-test-data:/var/lib/mysql
       - ./mysql/init:/docker-entrypoint-initdb.d # 初期化スクリプトをマウント
     healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-proot"]
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pRoot12345"]
       interval: 10s
       timeout: 5s
       retries: 5
