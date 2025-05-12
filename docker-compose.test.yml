@@ -1,0 +1,61 @@
+services:
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+      target: test
+    container_name: test-book-tracker-backend
+    env_file:
+      - .env.test
+    depends_on:
+      db:
+        condition: service_healthy
+      localstack:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+    working_dir: /app
+    # 起動時に結合テストを実行
+    command: go test -v ./test/integration/... -tags=integration
+
+  db:
+    image: mysql:8.0
+    container_name: test-book-tracker-db
+    environment:
+      MYSQL_ROOT_PASSWORD: Root12345
+      MYSQL_DATABASE: test_book_tracker
+    ports:
+      - "13306:3306" # テスト用にポートをずらす(内部ポートはそのまま)
+    volumes:
+      - mysql-test-data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d # 初期化スクリプトをマウント
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-pRoot12345"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  localstack:
+    image: localstack/localstack:latest
+    container_name: test-localstack
+    ports:
+      - "14566:4566" # テスト用にポートを調整
+    environment:
+      SERVICES: "s3"
+      AWS_DEFAULT_REGION: ap-northeast-1
+    volumes:
+      - localstack-test-data:/var/lib/localstack
+      - /var/run/docker.sock:/var/run/docker.sock
+      - ./localstack/init-s3.test.sh:/etc/localstack/init/ready.d/init-s3.sh
+      - ./localstack/init-data:/init-data
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:4566/_localstack/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mysql-test-data:
+  localstack-test-data:

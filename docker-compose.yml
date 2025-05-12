@@ -28,6 +28,7 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
+      target: local # ビルドステージを指定
     networks:
       - app-networks
     volumes:
@@ -48,9 +49,10 @@ services:
     networks:
       - app-networks
     volumes: # コンテナの外部に保管する
-      - mysql-data-dev:/var/lib/mysql # データベースデータを永続化するボリューム
+      - mysql-data:/var/lib/mysql # データベースデータを永続化するボリューム
+      - ./mysql/init:/docker-entrypoint-initdb.d # 初期化スクリプトをマウント
     environment:
-      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-root}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-Root12345}
       MYSQL_DATABASE: ${DB_NAME:-book-tracker}
     env_file:
       - .env
@@ -96,14 +98,15 @@ services:
       start_period: 10s
 
     volumes:
-      - ./localstack-data:/var/lib/localstack # LocalStackのデータを永続化するボリューム
+      - localstack-data:/var/lib/localstack # LocalStackのデータを永続化するボリューム
       - /var/run/docker.sock:/var/run/docker.sock # Dockerソケットをマウント
-      - ./localstack/init-s3.sh:/etc/localstack/init/ready.d/init-s3.sh
+      - ./localstack/init-s3.sh:/etc/localstack/init/ready.d/init-s3.sh # S3の初期化スクリプトをマウント
       - ./localstack/init-data:/init-data # 初期データを格納するディレクトリ
 
 # ボリュームの定義
 volumes:
-  mysql-data-dev: # db の volume の名前を定義
+  mysql-data: # db の volume の名前を定義
+  localstack-data: # localstack の volume の名前を定義
 
 networks:
   app-networks: # ネットワークの名前を指定

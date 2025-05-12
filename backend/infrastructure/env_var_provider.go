@@ -68,5 +68,5 @@ func (evp *EnvVarProviderImpl) GetS3BucketName() string {
 }
 
 func (evp *EnvVarProviderImpl) GetGoogleBooksEndpoint() string {
-	return os.Getenv("GOOGLE_BOOKS_ENDPOINT")
+	return os.Getenv("GOOGLE_BOOKS_API_ENDPOINT")
 }
