@@ -63,11 +63,11 @@ const Memo = ({ bookId, userId, onClose }: MemoProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-items-center bg-black bg-opacity-40"
+      className="fixed inset-0 z-50 flex items-center justify-items-center bg-black/10"
       role="dialog"
       aria-modal="true"
     >
-      <div className="w-80 rounded bg-white p-6 shadow-lg">
+      <div className="w-80 rounded bg-white p-6 shadow-lg mx-auto">
         <h4 className="test-lg mb-2 font-bold">Memo</h4>
         {loading ? (
           <p>Loading...</p>
@@ -78,7 +78,7 @@ const Memo = ({ bookId, userId, onClose }: MemoProps) => {
               rows={5}
               value={memoText}
               onChange={(e) => setMemoText(e.target.value)}
-              placeholder="Input memo"
+              placeholder="Let's Input memo!"
             />
             {error && <p className="mt-2 px-3 py-1 text-red-300">{error}</p>}
             <div className="mt-2 flex justify-end gap-2">
