@@ -34,7 +34,7 @@ func (m Memo) GetImageUrl() string {
 }
 
 type MemoRepository interface {
-	FindByID(db *gorm.DB, id uint, userID string) (Memo, error)
+	FindByID(db *gorm.DB, userID, bookID string) (Memo, error)
 	Create(db *gorm.DB, memo Memo) (Memo, error)
 	Update(db *gorm.DB, memo Memo) (Memo, error)
 	Delete(db *gorm.DB, id uint, userID string) error
