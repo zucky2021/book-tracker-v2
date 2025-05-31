@@ -90,7 +90,7 @@ const Bookshelf = () => {
 
       return () => {
         controller.abort();
-      }
+      };
     };
 
     if (userId) {
@@ -330,7 +330,7 @@ const Bookshelf = () => {
           <p className="my-3 text-center font-serif text-xl">That's all</p>
         }
       >
-        <BookList books={filteredBooks} />
+        {userId && <BookList books={filteredBooks} userId={userId} />}
       </InfiniteScroll>
 
       {error && (

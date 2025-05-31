@@ -30,15 +30,15 @@ func NewUpdateMemoUseCase(
 
 func (uc *UpdateMemoUseCase) Execute(
 	ctx context.Context,
-	memoID uint,
 	userID string,
+	bookID string,
 	text string,
 	imgData []byte,
 	fileHeader *multipart.FileHeader,
 ) (domain.Memo, error) {
 	var result domain.Memo
 
-	memo, findErr := uc.repo.FindByID(uc.uow.Reader(), memoID, userID)
+	memo, findErr := uc.repo.FindByID(uc.uow.Reader(), userID, bookID)
 	if findErr != nil {
 		return result, findErr
 	}

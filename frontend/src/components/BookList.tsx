@@ -9,7 +9,6 @@ type BookListProps = {
 };
 
 const BookList = ({ books, userId }: BookListProps) => {
-  // TODO:userIdはコンテキストを使った方がいい？
   const [openMemo, setOpenMemo] = useState<string | null>(null);
 
   return (
@@ -67,11 +66,11 @@ const BookList = ({ books, userId }: BookListProps) => {
             >
               Memo
             </button>
-            {openMemo && (
+            {openMemo === book.id && userId && (
               <Memo
                 bookId={book.id}
-                onClose={() => setOpenMemo(null)}
                 userId={userId}
+                onClose={() => setOpenMemo(null)}
               />
             )}
           </li>

@@ -14,10 +14,10 @@ func NewMemoRepository() domain.MemoRepository {
 	return &MemoRepositoryImpl{}
 }
 
-func (mr *MemoRepositoryImpl) FindByID(db *gorm.DB, id uint, userId string) (domain.Memo, error) {
+func (mr *MemoRepositoryImpl) FindByID(db *gorm.DB, userID, bookID string) (domain.Memo, error) {
 	var memo domain.Memo
 
-	if err := db.Where("id = ? AND user_id = ?", id, userId).First(&memo).Error; err != nil {
+	if err := db.Where("user_id = ? AND book_id = ?", userID, bookID).First(&memo).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return domain.Memo{}, fmt.Errorf("memo not found: %w", err)
 		}
