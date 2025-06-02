@@ -51,20 +51,18 @@ func (uc *CreateMemoUseCase) Execute(
 			ImgFileName: imgFileName,
 		}
 
-		created, err := uc.memoRepo.Create(tx, memo)
-		if err != nil {
-			return err
+		if err := uc.memoRepo.UpsertMemo(tx, &memo); err != nil {
+			return fmt.Errorf("failed to upsert memo: %w", err)
 		}
 
 		if imgFileName != "" && len(imgData) > 0 {
 			key := fmt.Sprintf("%s/%s", userID, imgFileName)
-			err = uc.storageRepo.Upload(ctx, key, imgData)
-			if err != nil {
+			if err := uc.storageRepo.Upload(ctx, key, imgData); err != nil {
 				return fmt.Errorf("failed to upload image to S3: %w", err)
 			}
 		}
 
-		result = created
+		result = memo
 		return nil
 	})
 	return result, err

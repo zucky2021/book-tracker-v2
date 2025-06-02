@@ -1,6 +1,6 @@
 import { memo, useState } from "react";
 import { GoogleBook } from "../types/google_book";
-import { ExternalLink, ShoppingBasket } from "lucide-react";
+import { ExternalLink, NotebookPen, ShoppingBasket } from "lucide-react";
 import Memo from "./Memo";
 
 type BookListProps = {
@@ -58,16 +58,17 @@ const BookList = ({ books, userId }: BookListProps) => {
               {book.volumeInfo.description || "説明不明"}
             </p>
 
-            {/* FIXME: Change icon. */}
             <button
               onClick={() => setOpenMemo(book.id)}
               aria-label="Watch memo"
-              className="m-1"
+              className="m-1 cursor-pointer"
             >
               Memo
+              <NotebookPen size={16} />
             </button>
             {openMemo === book.id && userId && (
               <Memo
+                key={book.id}
                 bookId={book.id}
                 userId={userId}
                 onClose={() => setOpenMemo(null)}

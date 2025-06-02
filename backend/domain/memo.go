@@ -13,13 +13,13 @@ const (
 )
 
 type Memo struct {
-	ID          uint   `gorm:"primaryKey"`
-	UserID      string `gorm:"size:255;not null;uniqueIndex:idx_user_book"`
-	BookID      string `gorm:"size:255;not null;uniqueIndex:idx_user_book"`
-	Text        string `gorm:"type:text;not null"`
-	ImgFileName string `gorm:"size:255"`
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
+	ID          uint      `gorm:"primaryKey" json:"id"`
+	UserID      string    `gorm:"size:255;not null;uniqueIndex:idx_user_book" json:"userId"`
+	BookID      string    `gorm:"size:255;not null;uniqueIndex:idx_user_book" json:"bookId"`
+	Text        string    `gorm:"type:text;not null" json:"text"`
+	ImgFileName string    `gorm:"size:255" json:"imgFileName,omitempty"` // Optional, can be empty if no image is uploaded
+	CreatedAt   time.Time `json:"createdAt"`
+	UpdatedAt   time.Time `json:"updatedAt"`
 }
 
 func GenerateImgFileName(ext string) string {
@@ -35,7 +35,6 @@ func (m Memo) GetImageUrl() string {
 
 type MemoRepository interface {
 	FindByID(db *gorm.DB, userID, bookID string) (Memo, error)
-	Create(db *gorm.DB, memo Memo) (Memo, error)
-	Update(db *gorm.DB, memo Memo) (Memo, error)
+	UpsertMemo(db *gorm.DB, memo *Memo) error
 	Delete(db *gorm.DB, id uint, userID string) error
 }

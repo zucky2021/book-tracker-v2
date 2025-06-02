@@ -57,20 +57,18 @@ func (uc *UpdateMemoUseCase) Execute(
 	memo.Text = text
 
 	updateErr := uc.uow.ExecuteInTransaction(func(tx *gorm.DB) error {
-		updated, err := uc.repo.Update(tx, memo)
-		if err != nil {
+		if err := uc.repo.UpsertMemo(tx, &memo); err != nil {
 			return err
 		}
 
 		if imgFileName != "" && len(imgData) > 0 {
 			key := fmt.Sprintf("%s/%s", userID, imgFileName)
-			err = uc.storageRepo.Upload(context.TODO(), key, imgData)
-			if err != nil {
+			if err := uc.storageRepo.Upload(context.TODO(), key, imgData); err != nil {
 				return fmt.Errorf("failed to upload image to S3: %w", err)
 			}
 		}
 
-		result = updated
+		result = memo
 		return nil
 	})
 	return result, updateErr
