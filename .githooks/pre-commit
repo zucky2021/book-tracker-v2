@@ -31,7 +31,8 @@ if [ -n "$CHANGED_MD_FILES" ]; then
 
   # Markdown Lint
   echo "Running markdownlint..."
-  npx markdownlint-cli2 --fix $CHANGED_MD_FILES
+  docker-compose run -T --rm markdownlint npx markdownlint-cli2 --fix $CHANGED_MD_FILES
+  # npx markdownlint-cli2 --fix $CHANGED_MD_FILES
   if [ $? -ne 0 ]; then
     echo "markdownlint failed. Please fix the issues before committing."
     exit 1

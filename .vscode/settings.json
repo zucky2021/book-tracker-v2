@@ -18,7 +18,8 @@
   "editor.renderWhitespace": "boundary",
   "indentRainbow.indentSetter": {
     "[json]": 2,
-    "[go]": 2
+    "[go]": 2,
+    "[markdown]": 4,
   },
   "[go]": {
     "editor.tabSize": 2,
@@ -26,7 +27,6 @@
     "editor.defaultFormatter": "golang.go"
   },
   "go.useLanguageServer": true, // Go言語サーバーを有効化
-  "go.buildOnSave": "workspace", // 保存時にビルドを実行
   "go.vetOnSave": "workspace", // 保存時にvetを実行
   "go.toolsManagement.autoUpdate": true, // Goツールを自動更新
   "go.formatTool": "goimports", // フォーマットツールを指定
@@ -42,5 +42,9 @@
   "postman.settings.dotenv-detection-notification-visibility": false,
   "[sql]": {
     "editor.defaultFormatter": "inferrinizzard.prettier-sql-vscode"
+  },
+  "[markdown]": {
+    "editor.defaultFormatter": "DavidAnson.vscode-markdownlint",
+    "editor.tabSize": 4,
   }
 }
