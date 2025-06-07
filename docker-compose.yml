@@ -3,6 +3,7 @@ services:
     build:
       context: ./frontend # フロントエンドプロジェクトのディレクトリ
       dockerfile: Dockerfile # 使用するDockerfile
+      target: local # ビルドステージを指定
     networks:
       - app-networks # ネットワークを指定
     volumes:
@@ -96,12 +97,19 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
-
     volumes:
       - localstack-data:/var/lib/localstack # LocalStackのデータを永続化するボリューム
       - /var/run/docker.sock:/var/run/docker.sock # Dockerソケットをマウント
       - ./localstack/init-s3.sh:/etc/localstack/init/ready.d/init-s3.sh # S3の初期化スクリプトをマウント
       - ./localstack/init-data:/init-data # 初期データを格納するディレクトリ
+
+  markdownlint:
+    image: node:24-alpine
+    container_name: markdownlint
+    working_dir: /work
+    volumes:
+      - .:/work
+    entrypoint: ["npx", "markdownlint-cli2"]
 
 # ボリュームの定義
 volumes:

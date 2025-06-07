@@ -30,15 +30,15 @@ func NewUpdateMemoUseCase(
 
 func (uc *UpdateMemoUseCase) Execute(
 	ctx context.Context,
-	memoID uint,
 	userID string,
+	bookID string,
 	text string,
 	imgData []byte,
 	fileHeader *multipart.FileHeader,
 ) (domain.Memo, error) {
 	var result domain.Memo
 
-	memo, findErr := uc.repo.FindByID(uc.uow.Reader(), memoID, userID)
+	memo, findErr := uc.repo.FindByID(uc.uow.Reader(), userID, bookID)
 	if findErr != nil {
 		return result, findErr
 	}
@@ -57,20 +57,18 @@ func (uc *UpdateMemoUseCase) Execute(
 	memo.Text = text
 
 	updateErr := uc.uow.ExecuteInTransaction(func(tx *gorm.DB) error {
-		updated, err := uc.repo.Update(tx, memo)
-		if err != nil {
+		if err := uc.repo.UpsertMemo(tx, &memo); err != nil {
 			return err
 		}
 
 		if imgFileName != "" && len(imgData) > 0 {
 			key := fmt.Sprintf("%s/%s", userID, imgFileName)
-			err = uc.storageRepo.Upload(context.TODO(), key, imgData)
-			if err != nil {
+			if err := uc.storageRepo.Upload(context.TODO(), key, imgData); err != nil {
 				return fmt.Errorf("failed to upload image to S3: %w", err)
 			}
 		}
 
-		result = updated
+		result = memo
 		return nil
 	})
 	return result, updateErr
