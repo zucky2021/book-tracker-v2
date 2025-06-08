@@ -14,8 +14,8 @@ func NewGetMemoUseCase(uow domain.UnitOfWork, repo domain.MemoRepository) *GetMe
 	}
 }
 
-func (uc *GetMemoUseCase) Execute(id uint, userId string) (domain.Memo, error) {
-	memo, err := uc.repo.FindByID(uc.uow.Reader(), id, userId)
+func (uc *GetMemoUseCase) Execute(userID, bookID string) (domain.Memo, error) {
+	memo, err := uc.repo.FindByID(uc.uow.Reader(), userID, bookID)
 	if err != nil {
 		return domain.Memo{}, err
 	}

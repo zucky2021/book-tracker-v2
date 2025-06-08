@@ -10,10 +10,10 @@ title: ブランチ戦略
 ---
 gitGraph
 %%{init: {
-  'gitGraph': {
-    'mainBranchName': 'main'
-  },
-  'theme': 'base'
+    'gitGraph': {
+        'mainBranchName': 'main'
+    },
+    'theme': 'base'
 }}%%
 
     commit
@@ -30,3 +30,6 @@ gitGraph
     checkout main
     merge x-hotfix/xx
 ```
+
+- tr
+    - tr

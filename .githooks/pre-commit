@@ -1,20 +1,42 @@
 #!/bin/bash
 
-# GO Format
-echo "Running gofmt..."
-docker-compose run -T --rm backend sh -c "cd /app && gofmt -s -w ."
-if [ $? -ne 0 ]; then
-  echo "gofmt failed. Please fix the formatting issues before committing."
-  exit 1
+# ステージングに存在するGOファイル
+CHANGED_GO_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.go$')
+if [ -n "$CHANGED_GO_FILES" ]; then
+  echo "Changed GO files:"
+  echo "$CHANGED_GO_FILES"
+
+  # Format
+  echo "Running gofmt..."
+  docker-compose run -T --rm backend sh -c "cd /app && gofmt -s -w ."
+  if [ $? -ne 0 ]; then
+    echo "gofmt failed. Please fix the formatting issues before committing."
+    exit 1
+  fi
+
+  # Lint
+  echo "Running golangci-lint..."
+  docker-compose run -T --rm lint
+  if [ $? -ne 0 ];then
+    echo "golangci-lint failed. Please fix the issues before committing."
+    exit 1
+  fi
 fi
 
-# GO Lint
-echo "Running golangci-lint..."
-docker-compose run -T --rm lint
-if [ $? -ne 0 ];then
-  echo "golangci-lint failed. Please fix the issues before committing."
-  exit 1
+# ステージングに存在するMarkdownファイル
+CHANGED_MD_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep '\.md$')
+if [ -n "$CHANGED_MD_FILES" ]; then
+  echo "Changed Markdown files:"
+  echo "$CHANGED_MD_FILES"
+
+  # Markdown Lint
+  echo "Running markdownlint..."
+  docker-compose run -T --rm markdownlint npx markdownlint-cli2 --fix $CHANGED_MD_FILES
+  # npx markdownlint-cli2 --fix $CHANGED_MD_FILES
+  if [ $? -ne 0 ]; then
+    echo "markdownlint failed. Please fix the issues before committing."
+    exit 1
+  fi
 fi
 
-echo "Static analysis passed."
 exit 0

@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	"gorm.io/gorm"
+	"gorm.io/gorm/clause"
 )
 
 type MemoRepositoryImpl struct{}
@@ -14,10 +15,10 @@ func NewMemoRepository() domain.MemoRepository {
 	return &MemoRepositoryImpl{}
 }
 
-func (mr *MemoRepositoryImpl) FindByID(db *gorm.DB, id uint, userId string) (domain.Memo, error) {
+func (mr *MemoRepositoryImpl) FindByID(db *gorm.DB, userID, bookID string) (domain.Memo, error) {
 	var memo domain.Memo
 
-	if err := db.Where("id = ? AND user_id = ?", id, userId).First(&memo).Error; err != nil {
+	if err := db.Where("user_id = ? AND book_id = ?", userID, bookID).First(&memo).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			return domain.Memo{}, fmt.Errorf("memo not found: %w", err)
 		}
@@ -26,21 +27,11 @@ func (mr *MemoRepositoryImpl) FindByID(db *gorm.DB, id uint, userId string) (dom
 	return memo, nil
 }
 
-func (mr *MemoRepositoryImpl) Create(db *gorm.DB, memo domain.Memo) (domain.Memo, error) {
-	if err := db.Create(&memo).Error; err != nil {
-		return domain.Memo{}, fmt.Errorf("error occurred while creating memo: %w", err)
-	}
-	return memo, nil
-}
-
-func (mr *MemoRepositoryImpl) Update(db *gorm.DB, memo domain.Memo) (domain.Memo, error) {
-	if err := db.Model(&memo).Updates(domain.Memo{
-		Text:        memo.Text,
-		ImgFileName: memo.ImgFileName,
-	}).Error; err != nil {
-		return domain.Memo{}, fmt.Errorf("error occurred while updating memo: %w", err)
-	}
-	return memo, nil
+func (mr *MemoRepositoryImpl) UpsertMemo(db *gorm.DB, memo *domain.Memo) error {
+	return db.Clauses(clause.OnConflict{
+		Columns:   []clause.Column{{Name: "user_id"}, {Name: "book_id"}},
+		DoUpdates: clause.AssignmentColumns([]string{"text", "img_file_name"}),
+	}).Create(memo).Error
 }
 
 func (mr *MemoRepositoryImpl) Delete(db *gorm.DB, id uint, userId string) error {
