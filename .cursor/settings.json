@@ -1,0 +1,7 @@
+// TODO:機能している？
+{
+  "cursor.review": {
+    "enabled": true,
+    "autoReview": true
+  }
+}
