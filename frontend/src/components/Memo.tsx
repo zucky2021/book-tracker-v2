@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { memo, useEffect, useState } from "react";
 
 type MemoProps = {
   bookId: string;
@@ -17,11 +17,13 @@ type MemoData = {
 };
 
 // メモモーダル
-const Memo = ({ bookId, userId, onClose }: MemoProps) => {
+const Memo = memo(({ bookId, userId, onClose }: MemoProps) => {
   const [memoText, setMemoText] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [imgFile, setImgFile] = useState<File | null>(null);
+
+  const maxMemoLength = 1000;
 
   useEffect(() => {
     const fetchMemo = async () => {
@@ -34,7 +36,6 @@ const Memo = ({ bookId, userId, onClose }: MemoProps) => {
         );
         if (res.ok) {
           const data: { memo: MemoData | null } = await res.json();
-          console.log("Fetched memo data:", data.memo?.text);
           setMemoText(data.memo?.text || "");
         } else if (res.status === 404) {
           setMemoText("");
@@ -68,7 +69,7 @@ const Memo = ({ bookId, userId, onClose }: MemoProps) => {
       formData.append("bookId", bookId);
       formData.append("text", memoText);
       if (imgFile) {
-        formData.append("image", imgFile);
+        formData.append("imgFile", imgFile);
       }
 
       const res = await fetch("http://localhost:8080/api/memo", {
@@ -86,12 +87,12 @@ const Memo = ({ bookId, userId, onClose }: MemoProps) => {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-items-center bg-black/10"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/10"
       role="dialog"
       aria-modal="true"
     >
       <div className="mx-auto w-80 rounded bg-white p-6 shadow-lg">
-        <h4 className="test-lg mb-2 font-bold">Memo</h4>
+        <h4 className="text-lg mb-2 font-bold">Memo</h4>
         {loading ? (
           <p>Loading...</p>
         ) : (
@@ -103,7 +104,11 @@ const Memo = ({ bookId, userId, onClose }: MemoProps) => {
               onChange={(e) => setMemoText(e.target.value)}
               placeholder="Let's Input memo!"
               required
+              maxLength={maxMemoLength}
             />
+            <p className="text-sm text-gray-500">
+              {memoText.length}/{maxMemoLength}
+            </p>
             <input
               type="file"
               accept="image/*"
@@ -131,6 +136,6 @@ const Memo = ({ bookId, userId, onClose }: MemoProps) => {
       </div>
     </div>
   );
-};
+});
 
 export default Memo;
