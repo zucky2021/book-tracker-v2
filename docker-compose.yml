@@ -106,6 +106,7 @@ services:
   markdownlint:
     image: node:24-alpine
     container_name: markdownlint
+    restart: no
     working_dir: /work
     volumes:
       - .:/work

@@ -17,7 +17,7 @@ if [ -n "$CHANGED_GO_FILES" ]; then
   # Lint
   echo "Running golangci-lint..."
   docker-compose run -T --rm lint
-  if [ $? -ne 0 ];then
+  if [ $? -ne 0 ]; then
     echo "golangci-lint failed. Please fix the issues before committing."
     exit 1
   fi
@@ -32,7 +32,6 @@ if [ -n "$CHANGED_MD_FILES" ]; then
   # Markdown Lint
   echo "Running markdownlint..."
   docker-compose run -T --rm markdownlint npx markdownlint-cli2 --fix $CHANGED_MD_FILES
-  # npx markdownlint-cli2 --fix $CHANGED_MD_FILES
   if [ $? -ne 0 ]; then
     echo "markdownlint failed. Please fix the issues before committing."
     exit 1

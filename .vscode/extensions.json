@@ -20,6 +20,7 @@
     "bierner.markdown-mermaid",
     "bradlc.vscode-tailwindcss",
     "christian-kohler.npm-intellisense",
-    "davidanson.vscode-markdownlint"
+    "davidanson.vscode-markdownlint",
+    "ms-azuretools.vscode-docker"
   ]
 }

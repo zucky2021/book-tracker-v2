@@ -9,6 +9,7 @@ const App: React.FC = () => {
     const checkHealth = async (retries = 5) => {
       for (let i = 0; i < retries; i++) {
         try {
+          // FIXME:URLのハードコードを避ける
           const response = await fetch("http://localhost:8080/health");
           if (response.ok) {
             const data = await response.json();
