@@ -94,7 +94,7 @@ alwaysApply: false
 - Linterツールの使用を検討
 
 ### Markdown
-- [markdownlint-cli2](mdc:https:/github.com/DavidAnson/markdownlint-cli2)に準拠していること
+- [markdownlint-cli2](https:/github.com/DavidAnson/markdownlint-cli2)に準拠していること
 
 ---
 
